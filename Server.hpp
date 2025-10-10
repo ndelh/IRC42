@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 11:42:21 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/04 11:42:33 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/10 14:39:34 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ class Server{
         ~Server(void);
         //getter
             //verification
-                bool        isPassCorrect(const std::string& test);
-                bool        nickAvailable(const std::string& name);
-                Channel*    existingChan(const std::string& name);
-                Client*     existingClient(const std::string& name);
+                bool                isPassCorrect(const std::string& test);
+                bool                nickAvailable(const std::string& name);
+                Channel*            existingChan(const std::string& name);
+                Client*             existingClient(const std::string& name);
+                const std::string   get_time(void) const;
 
         //core function
             //routine
@@ -53,8 +54,8 @@ class Server{
             const std::string   userMode;
             const std::string   channelMode;
     private:
-    
-        //private function 
+
+        //private function
             //server intialization/ epoll management and signals
                 void        launchServ(void);
                 void        signals_init(void);
@@ -63,7 +64,7 @@ class Server{
                 void        epollInit(void);
                 void        addWFlag(int fd);
                 void        removeWFlag(int fd);
-                
+
             //server destruction
                 void        cleanMapsAlloc(void);
             //client gestion
@@ -78,6 +79,8 @@ class Server{
                 void        watchRoutine(void);
                 void        watchClient(void);
                 void        watchChannel(void);
+            //time setter
+                void        set_time(void);
 
         //private variables
             //simple variables
@@ -89,6 +92,7 @@ class Server{
                 int                 _serverSocket;
                 sockaddr_in         _servAddr;
                 char                _hostname[256];
+                std::string         _timeCreation;
             //container
                 std::map<int, Client*> _clientList;
                 std::map<std::string, Client*> _phoneBook;

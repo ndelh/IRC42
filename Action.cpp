@@ -114,15 +114,15 @@ std::string  Action::generateMsg(int code)
 
         std::string     Action::rplCreatead3(void)
         {
-            return getPrefixTrio("003") + ":This server was created today"; // add a way to collect date in server constructor
+            return getPrefixTrio("003") + ":This server was created on " + _base->get_time();
         }
 
         std::string     Action::rplMyInfo4(void)
         {
             return getPrefixTrio("004") + _base->servName + " " + _base->version + " " + _base->userMode + " " + _base->channelMode;
         }
-    
-    //join related one 
+
+    //join related one
         //join utilitary
 
         //join main;
@@ -149,14 +149,14 @@ std::string  Action::generateMsg(int code)
         std::string     Action::rplNoSuchNick401(void)
         {
             return (getPrefixTrio("401") + _cmdTarget + " :No such Nick");
-        
+
         }
 
         std::string     Action::rplNoSuchChannel403(void)
         {
             return (getPrefixTrio("403") + _cmdTarget + " :No such Channel");
         }
-        
+
         std::string     Action::rplCannotSendToChan404(void)
         {
             return (getPrefixTrio("404") + _cmdTarget + " :Cannot send to channel");
