@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:35:32 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/08 18:02:04 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/11 17:08:27 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void Client::addMembership(const std::string& name, Channel* chan)
     _membership.insert(std::make_pair(name, chan));
 }
 
-//remover 
+//remover
 
 void Client::removeMembership(const std::string& name)
 {
@@ -138,7 +138,7 @@ std::string extractCmd(std::string &line)
     size_t n;
     std::string cmd;
     while (!line.empty())
-    {   
+    {
         char last = line[line.size() - 1];
         if (last == '\r' || last == '\n')
             line.erase(line.size() - 1);
@@ -157,7 +157,7 @@ std::string extractCmd(std::string &line)
     }
     return (cmd);
 
-    
+
 }
 // log part
 bool Client::securityCheck(std::istringstream &flux)
@@ -197,10 +197,7 @@ void Client::registration(std::istringstream &flux)
         cmd = extractCmd(line);
         std::cout << "cmd: [" << cmd << "]" << std::endl;
         if (cmd == "NICK")
-        {
-            std::cout << "dedans" << std::endl;
             buildExecuteNick(_base, this, line);
-        }
         else if (cmd == "USER")
             buildExecuteUser(_base, this, line);
         else
@@ -223,7 +220,6 @@ void Client::clientCmd(std::string &line)
     std::string cmd;
 
     cmd = extractCmd(line);
-    std::cout << "cmd: [" << cmd << "]" << std::endl;
     for (int i = 0; i < functMapSize; i++)
     {
         if (cmd == functMap[i].name)
@@ -270,7 +266,7 @@ void Client::sendmsg(void)
     _tosend.erase();
 }
 
-//broadcasting 
+//broadcasting
 
 void    Client::broadcastToLinked(const std::string& msg)
 {
