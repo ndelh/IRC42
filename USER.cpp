@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 14:27:05 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/11 14:24:32 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/11 16:24:37 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ bool    User::argCount()
         if (line.empty())
             break;
         n++;
+        if (line[0] == ':')
+            break;
     }
     std::cout << n << std::endl;
     return (n >= 4);
