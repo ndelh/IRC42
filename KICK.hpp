@@ -1,6 +1,7 @@
 #pragma once
 #include "Action.hpp"
 #include <iostream>
+#include <sstream>
 
 class Kick : public Action
 {

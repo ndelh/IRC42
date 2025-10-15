@@ -15,7 +15,7 @@ Kick::~Kick(void)
 
 void	Kick::act(void)
 {
-	if (!parse_args());
+	if (!parse_args())
 		return;
 	_chan = _base->existingChan(_chanName);
 	if (!_chan)
@@ -30,8 +30,11 @@ void	Kick::act(void)
 		return (_customer->addSend(generateMsg(441)));
 	else
 	{
-		_contextualArgs = _reason;
-		
+		if (!_reason.empty())
+			_contextualArgs = " " + _reason;
+		_chan->broadcastMembers(generateMsg(-10));
+		_base->existingClient(_cmdTarget)->removeMembership(_chanName);
+		_chan->customerLeave(_base->existingClient(_cmdTarget));
 	}
 
 }

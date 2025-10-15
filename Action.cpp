@@ -110,7 +110,7 @@ std::string  Action::generateMsg(int code)
 
         std::string     Action::kickMessage(void)
         {
-            return (":" + _customer->getNick() + getUserHost() + " " + "KICK " + _chan->name + _cmdTarget + _contextualArgs);
+            return (":" + _customer->getNick() + getUserHost() + " " + "KICK " + _chan->name + " " + _cmdTarget + _contextualArgs);
         }
         std::string     Action::flagChangeMessage(void)
         {
