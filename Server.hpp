@@ -95,6 +95,7 @@ class Server{
                 int                 _serverSocket;
                 sockaddr_in         _servAddr;
                 char                _hostname[256];
+                std::string         _timeCreation;
             //container
                 std::map<int, Client*> _clientList;
                 std::map<std::string, Client*> _phoneBook;

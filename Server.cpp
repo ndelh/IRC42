@@ -30,6 +30,7 @@ Server::Server(char *port, char *password):servName("DoleyDel"), version("1.0"),
 {
     if (strlen(port) > 5 || _port < 1024 || _port > 49151)
         throw std::domain_error("acceptable port range is [1024, 49151]");
+    set_time();
     launchServ();
 }
 
