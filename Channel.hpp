@@ -34,8 +34,11 @@ class	Channel
 				bool	isInvited(const std::string& name);
 				bool	correctPass(const std::string& test);
 				bool	isTopicRestricted(void);
+				bool	emptyTopic(void);
+				bool	placeAvailable(void);
 			//returner
-				int		getPlaceNb(void);
+				int					getPlaceNb(void);
+				const std::string&	getTopic(void); 
 			//lister
 				std::string		displayMembers(void);
 				std::set<char>	activeFlags(void);
@@ -43,9 +46,11 @@ class	Channel
 			//adder
 				void	customerJoin(Client* customer);
 				void	customerPromote(const std::string& customerName);
+				void	addInviteList(const std::string& customerName);
 			//remover
 				void	customerDemote(const std::string& customerName);
 				void	customerLeave(Client* customer);
+				void	removeInviteList(const std::string& customerName);
 			//updater
 				void	updateNick(const std::string& oldname, Client* customer);
 				void	changeInvMode(bool b);

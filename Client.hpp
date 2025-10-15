@@ -90,7 +90,7 @@ class Client
             //container
                     std::map<std::string, Channel*>     _membership;
             //function map
-                static repartitor         functMap[9];
+                static repartitor         functMap[10];
                 static const int          functMapSize;
             //action related command
                 //log system

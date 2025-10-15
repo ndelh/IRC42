@@ -22,8 +22,8 @@ class Action;
 typedef std::string (Action::*pointer)(void);
 struct functionTable
 {
-        int     code;
-        pointer    funct;
+        int             code;
+        pointer         funct;
 };
 
 
@@ -38,6 +38,8 @@ class Action
     private:
         //factorising function
                 //customized one;
+                        std::string     inviteMessage(void);
+                        std::string     topicChangeMessage(void);
                         std::string     flagChangeMessage(void);
                         std::string     operatorChangeMessage(void);
                         std::string     partmessage(void);
@@ -52,7 +54,9 @@ class Action
                         std::string     rplMyInfo4(void);
                 //join related
                         std::string     rplChannelModeIs324(void);
+                        std::string     rplNoTopic331(void);
                         std::string     rplTopic332(void);
+                        std::string     rplInviting341(void);
                         std::string     rplNameply353(void);
                         std::string     rplEON366(void);
                 //client related
@@ -83,7 +87,7 @@ class Action
                 void                            shortCutContext(size_t i);
         //container
                 static const int                _tablesize;
-                static const functionTable      _table[29];
+                static const functionTable      _table[33];
         
                 
 

@@ -13,6 +13,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
+#include <set>
 #include <algorithm>
 
 //constructor & destructor
@@ -75,6 +76,7 @@ Channel::~Channel(void)
 		
 		bool	Channel::isInvited(const std::string& name)
 		{
+				std::cout << name << std::endl;
 				return (_invitationList.find(name) != _invitationList.end());
 		}
 
@@ -82,10 +84,25 @@ Channel::~Channel(void)
 		{
 				return _topicrestricted;
 		}
+
+		bool	Channel::emptyTopic(void)
+		{
+				return _topic.empty();
+		}
+
+		bool	Channel::placeAvailable(void)
+		{
+				return (_membersNumber < _maxMembers);
+		}
 	//returners
 		int		Channel::getPlaceNb(void)
 		{
 				return _maxMembers;
+		}
+
+		const std::string&	Channel::getTopic(void)
+		{
+				return _topic;
 		}
 		
 	//listers
@@ -136,6 +153,17 @@ Channel::~Channel(void)
 		{
 				_operatorList.insert(customerName);
 		}
+
+		void	Channel::addInviteList(const std::string& customerName)
+		{
+				_invitationList.insert(customerName);
+				std::set<std::string>::iterator it;
+				std::cout << "printing the set" << std::endl;
+				for (it = _invitationList.begin(); it != _invitationList.end(); it++)
+				{
+					std::cout << "entry: " << *it << std::endl;
+				}
+		}
 	//removers
 		void	Channel::customerDemote(const std::string& customerName)
 		{
@@ -148,12 +176,29 @@ Channel::~Channel(void)
 					customerDemote(customer->getNick());
 				--_membersNumber;
 		}
+		void	Channel::removeInviteList(const std::string& customerName)
+		{
+				std::set<std::string>::iterator it;
+				
+				it = _invitationList.find(customerName);
+				if (it != _invitationList.end())
+					_invitationList.erase(it);
+		}
 	//updater
 
 		void	Channel::updateNick(const std::string& oldName, Client* customer)
 		{
 				_memberlist.erase(_memberlist.find(oldName));
 				_memberlist.insert(std::make_pair(customer->getNick(), customer));
+				
+				std::set<std::string>::iterator	it;
+				
+				it = _operatorList.find(oldName);
+				if (it != _operatorList.end())
+				{
+					_operatorList.erase(it);
+					_operatorList.insert(customer->getNick());
+				}
 		}
 
 		void	Channel::changeInvMode(bool b)

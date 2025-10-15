@@ -17,8 +17,10 @@
 #include <string>
 
 //outofscope const struct;
-const int              Action::_tablesize = 29;
-const functionTable    Action::_table[29] = {
+const int              Action::_tablesize = 33;
+const functionTable    Action::_table[33] = {
+        {-9, &Action::inviteMessage},
+        {-8, &Action::topicChangeMessage},
         {-7, &Action::flagChangeMessage},
         {-6, &Action::operatorChangeMessage},
         {-5, &Action::partmessage},
@@ -31,7 +33,9 @@ const functionTable    Action::_table[29] = {
         {3, &Action::rplCreatead3},
         {4, &Action::rplMyInfo4},
         {324, &Action::rplChannelModeIs324},
+        {331, &Action::rplNoTopic331},
         {332, &Action::rplTopic332},
+        {341, &Action::rplInviting341},
         {353, &Action::rplNameply353},
         {366, &Action::rplEON366},
         {401, &Action::rplNoSuchNick401},
@@ -81,7 +85,7 @@ void        Action::shortCutContext(size_t i)
     if (_contextualArgs.size() < i)
         return;
     _contextualArgs.erase(i - 1);
-    _contextualArgs += "...";       
+    _contextualArgs += "...";   
 }
 
 //act
@@ -105,6 +109,16 @@ std::string  Action::generateMsg(int code)
 }
 
     //personalized one
+
+    std::string     Action::inviteMessage(void)
+    {
+            return (":" + _customer->getNick() + getUserHost() + " INVITE " + _cmdTarget + " :" + _chan->name);
+    }
+
+    std::string     Action::topicChangeMessage(void)
+        {
+            return (":" +  _customer->getNick() + " TOPIC " + _chan->name + " :" + _contextualArgs);
+        }
 
         std::string     Action::flagChangeMessage(void)
         {
@@ -164,15 +178,27 @@ std::string  Action::generateMsg(int code)
         //join utilitary
 
         //join main;
+
         std::string     Action::rplChannelModeIs324(void)
         {
             return getPrefixTrio("324") +  _chan->name + " +" + _contextualArgs;
         }
 
+        std::string     Action::rplNoTopic331(void)
+        {
+            return  getPrefixTrio("331") + _chan->name + " :No topic is set";
+        }
+        
         std::string     Action::rplTopic332(void)
         {
-            return  getPrefixTrio("332") +  " " + _chan->name + " :";
+            return  getPrefixTrio("332") + _chan->name + " :" + _chan->getTopic();
         }
+
+        std::string     Action::rplInviting341(void)
+        {
+            return getPrefixTrio("341") + _cmdTarget + " " + _chan->name;
+        }
+
 
         std::string     Action::rplNameply353(void)
         {

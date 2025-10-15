@@ -286,7 +286,7 @@ Mode::~Mode(void)
 				return;
 			if(!_chan->isMember(_cmdTarget))
 			{
-				_customer->addSend(generateMsg(401));
+				_customer->addSend(generateMsg(401)); //create 441 and change here
 				return;
 			}
 			if (!b)
@@ -318,7 +318,7 @@ Mode::~Mode(void)
 				_contextualArgs += *it;
 			_contextualArgs += " :";
 			if (activeFlags.find('k') != activeFlags.end())
-				_contextualArgs += "####";
+				_contextualArgs += "#####";
 			if (activeFlags.find('l') != activeFlags.end())
 			{
 				_contextualArgs += " " + convertInt(_chan->getPlaceNb());
@@ -328,7 +328,6 @@ Mode::~Mode(void)
 
 void	Mode::act(void)
 {
-	std::cout << "call to mode sucessfull" << std::endl;
 	_cmdName = "MODE";
 	if (!globalParse())
 		return;

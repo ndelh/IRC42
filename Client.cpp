@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:35:32 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/15 09:17:23 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:15:10 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@
 #include "PART.hpp"
 #include "MODE.hpp"
 #include "TOPIC.hpp"
+#include "INVITE.hpp"
 #include <unistd.h>
 
 // static data
 
-const int Client::functMapSize = 9;
+const int Client::functMapSize = 10;
 
-repartitor Client::functMap[9] = {
+repartitor Client::functMap[10] = {
     {"NICK", &buildExecuteNick},
     {"USER", &buildExecuteUser},
     {"JOIN", &buildExecuteJoin},
@@ -38,6 +39,7 @@ repartitor Client::functMap[9] = {
     {"PART", &buildExecutePart},
     {"MODE", &buildExecuteMode},
     {"TOPIC", &buildExecuteTopic},
+    {"INVITE", &buildExecuteInvite},
 };
 
 // constructor && destructor
@@ -131,18 +133,18 @@ void Client::updateNick(const std::string& Oldnick)
 }
 
 // adders
-void Client::addReceived(const std::string &toAdd)
+void    Client::addReceived(const std::string &toAdd)
 {
     _received += toAdd;
 }
 
-void Client::addSend(const std::string &toAdd)
+void    Client::addSend(const std::string &toAdd)
 {
     if (!_disconnected)
         _tosend += toAdd + "\r\n";
 }
 
-void     Client::addMembership(const std::string& name, Channel* chan)
+void    Client::addMembership(const std::string& name, Channel* chan)
 {
     _membership.insert(std::make_pair(name, chan));
 }

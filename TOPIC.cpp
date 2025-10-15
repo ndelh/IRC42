@@ -19,6 +19,7 @@
 
 Topic::Topic(Server* base, Client* customer, const std::string& cmdArgs): Action(base, customer, cmdArgs), _flux(cmdArgs)
 {
+	_cmdName = "TOPIC";
 }
 
 Topic::~Topic(void)
@@ -50,7 +51,10 @@ Topic::~Topic(void)
 		//displayTopic
 			void	Topic::displayTopic(void)
 			{
-					std::cout << "display topic" << std::endl;
+					if (!_chan->emptyTopic())
+						_customer->addSend(generateMsg(332));
+					else
+						_customer->addSend(generateMsg(331));
 			}
 
 		//changeTopid
@@ -69,8 +73,16 @@ Topic::~Topic(void)
 			{
 				if (!changeRights())
 					return ;
+				if (_contextualArgs[0] != ':')
+				{
+					_customer->addSend(generateMsg(461));
+					return ;
+				}
 				if (_contextualArgs.size() > 390)
 					_contextualArgs = _contextualArgs.substr(390);
+				_contextualArgs.erase(0, 1);
+				_chan->setTopic(_contextualArgs);
+				_chan->broadcastMembers(generateMsg(-8));
 			}
 void	Topic::act(void)
 {

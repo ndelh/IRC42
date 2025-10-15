@@ -70,7 +70,7 @@ Join::~Join()
 
 		bool	Join::checkInvite(void)
 		{
-				if (!_chan->isInvited(_chan->name))
+				if (!_chan->isInvited(_customer->getNick()))
 				{
 					_customer->addSend(generateMsg(473));
 					return (false);
@@ -115,14 +115,17 @@ Join::~Join()
 		void	Join::joinChan(const std::string& pass)
 		{
 				if (_chan->isInvitationOnly())
+				{
 					if (!checkInvite())
 						return;
+				}
 				if	(_chan->isPassProtected())
 					if (!checkPass(pass))
 						return;
 				if	(!checkDoublon())
 					return ;
 				_chan->customerJoin(_customer);
+				_chan->removeInviteList(_customer->getNick());
 				CommunicateSuccess();
 				
 		}
