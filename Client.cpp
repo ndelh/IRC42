@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:35:32 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/15 09:17:23 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/15 19:06:00 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@
 #include "PART.hpp"
 #include "MODE.hpp"
 #include "TOPIC.hpp"
+#include "KICK.hpp"
 #include <unistd.h>
 
 // static data
 
-const int Client::functMapSize = 9;
+const int Client::functMapSize = 10;
 
-repartitor Client::functMap[9] = {
+repartitor Client::functMap[10] = {
     {"NICK", &buildExecuteNick},
     {"USER", &buildExecuteUser},
     {"JOIN", &buildExecuteJoin},
@@ -38,6 +39,7 @@ repartitor Client::functMap[9] = {
     {"PART", &buildExecutePart},
     {"MODE", &buildExecuteMode},
     {"TOPIC", &buildExecuteTopic},
+    {"KICK", &buildExecuteKick},
 };
 
 // constructor && destructor
@@ -125,7 +127,7 @@ void Client::setMustKill()
 void Client::updateNick(const std::string& Oldnick)
 {
     std::map<std::string, Channel*>::iterator   it;
-    
+
     for (it = _membership.begin(); it != _membership.end(); it++)
             it->second->updateNick(Oldnick, this);
 }
@@ -147,7 +149,7 @@ void     Client::addMembership(const std::string& name, Channel* chan)
     _membership.insert(std::make_pair(name, chan));
 }
 
-//remover 
+//remover
 
 void     Client::removeMembership(const std::string& name)
 {
@@ -196,7 +198,7 @@ std::string extractCmd(std::string &line)
     }
     return (cmd);
 
-    
+
 }
 // log part
 bool Client::securityCheck(std::istringstream &flux)
@@ -287,7 +289,7 @@ void Client::act(void)
     }
     while (getline(flux, line) && !_mustKill)
         clientCmd(line);
-    
+
 }
 
 // sending msg
@@ -306,7 +308,7 @@ void Client::sendmsg(void)
     _tosend.erase();
 }
 
-//broadcasting 
+//broadcasting
 
 void    Client::broadcastToLinked(const std::string& msg)
 {
