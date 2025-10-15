@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 16:27:25 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/08 16:22:46 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/15 13:29:40 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ class Action
                 //nick related
                         std::string     erroneusNick432(void);
                         std::string     nickTaken433(void);
+                        std::string     rplUserNotInChannel441(void);
                         std::string     rplNotOnChannel442(void);
                         std::string     rplUserOnChannel443(void);
                 //general
@@ -83,9 +84,9 @@ class Action
                 void                            shortCutContext(size_t i);
         //container
                 static const int                _tablesize;
-                static const functionTable      _table[29];
-        
-                
+                static const functionTable      _table[30];
+
+
 
 
     protected:
