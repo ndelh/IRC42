@@ -17,8 +17,9 @@
 #include <string>
 
 //outofscope const struct;
-const int              Action::_tablesize = 34;
-const functionTable    Action::_table[34] = {
+const int              Action::_tablesize = 36;
+const functionTable    Action::_table[36] = {
+        {-10, &Action::kickMessage},
         {-9, &Action::inviteMessage},
         {-8, &Action::topicChangeMessage},
         {-7, &Action::flagChangeMessage},
@@ -43,6 +44,7 @@ const functionTable    Action::_table[34] = {
         {404, &Action::rplCannotSendToChan404},
         {432, &Action::erroneusNick432},
         {433, &Action::nickTaken433},
+        {441, &Action::rplUserNotInChannel441},
         {442, &Action::rplNotOnChannel442},
         {443, &Action::rplUserOnChannel443},
         {461, &Action::needMoreParams461},
@@ -86,7 +88,7 @@ void        Action::shortCutContext(size_t i)
     if (_contextualArgs.size() < i)
         return;
     _contextualArgs.erase(i - 1);
-    _contextualArgs += "...";   
+    _contextualArgs += "...";
 }
 
 //act
@@ -121,6 +123,10 @@ std::string  Action::generateMsg(int code)
             return (":" +  _customer->getNick() + " TOPIC " + _chan->name + " :" + _contextualArgs);
         }
 
+        std::string     Action::kickMessage(void)
+        {
+            return (":" + _customer->getNick() + getUserHost() + " " + "KICK " + _chan->name + " " + _cmdTarget + _contextualArgs);
+        }
         std::string     Action::flagChangeMessage(void)
         {
             return (":" + _customer->getNick() + " MODE " + _chan->name + " " + _contextualArgs);
@@ -137,7 +143,7 @@ std::string  Action::generateMsg(int code)
 
         std::string     Action::quitmessage(void)
         {
-            return (":" + _customer->getNick() + getUserHost() + " QUIT :" + _cmdArgs); 
+            return (":" + _customer->getNick() + getUserHost() + " QUIT :" + _cmdArgs);
         }
         std::string     Action::privmessage(void) //need to add a cutting system here
         {
@@ -174,8 +180,8 @@ std::string  Action::generateMsg(int code)
         {
             return getPrefixTrio("004") + _base->servName + " " + _base->version + " " + _base->userMode + " " + _base->channelMode;
         }
-    
-    //join related one 
+
+    //join related one
         //join utilitary
 
         //join main;
@@ -185,11 +191,6 @@ std::string  Action::generateMsg(int code)
             return getPrefixTrio("324") +  _chan->name + " +" + _contextualArgs;
         }
 
-        std::string     Action::rplNoTopic331(void)
-        {
-            return  getPrefixTrio("331") + _chan->name + " :No topic is set";
-        }
-        
         std::string     Action::rplTopic332(void)
         {
             return  getPrefixTrio("332") + _chan->name + " :" + _chan->getTopic();
@@ -220,7 +221,7 @@ std::string  Action::generateMsg(int code)
         std::string     Action::rplNoSuchNick401(void)
         {
             return (getPrefixTrio("401") + _cmdTarget + " :No such Nick");
-        
+
         }
 
         std::string     Action::rplNoSuchChannel403(void)
@@ -229,7 +230,7 @@ std::string  Action::generateMsg(int code)
             shortCutContext(50);
             return (getPrefixTrio("403") + _cmdTarget + " :No such Channel");
         }
-        
+
         std::string     Action::rplCannotSendToChan404(void)
         {
             _contextualArgs = _cmdTarget;
@@ -248,7 +249,13 @@ std::string  Action::generateMsg(int code)
         {
             std::string errormsg(":Nickname is already in use");
 
-            return getPrefixTrio("433") + _cmdArgs.substr(0, _cmdArgs.find(' ')) + " " + errormsg;
+            return getPrefixTrio("433") + _cmdArgs.substr(0, _cmdArgs
+                .find(' ')) + " " + errormsg;
+        }
+
+        std::string     Action::rplUserNotInChannel441(void)
+        {
+             return  getPrefixTrio("441") + _customer->getNick() + " " + _cmdTarget + " " + _chan->name + " :They aren't on that channel";
         }
 
         std::string     Action::rplNotOnChannel442(void)
@@ -258,7 +265,7 @@ std::string  Action::generateMsg(int code)
 
         std::string     Action::rplUserOnChannel443(void)
         {
-            return  getPrefixTrio("443") + _customer->getNick() + " " + _chan->name + " :is already on channel";
+            return  getPrefixTrio("443") + _customer->getNick() + " " + _cmdTarget + " " + _chan->name + " :is already on channel";
         }
     //general
         std::string     Action::needMoreParams461(void)
@@ -300,7 +307,7 @@ std::string  Action::generateMsg(int code)
 
         std::string     Action::badChanMask476(void)
         {
-            shortCutContext(50); 
+            shortCutContext(50);
             return getPrefixTrio("476") +  _contextualArgs + " :Bad channel mask";
         }
 
@@ -316,14 +323,14 @@ std::string  Action::generateMsg(int code)
 
         bool    Action::globalParse(void)
         {
-            size_t  n;                
+            size_t  n;
             if (_cmdArgs.empty() || onlySpace())
             {
                 _customer->addSend(generateMsg(461));
                 return false;
             }
             n = _cmdArgs.find(' ');
-            if (n == 0) 
+            if (n == 0)
             {
                 _customer->addSend(generateMsg(461));
                     return false;

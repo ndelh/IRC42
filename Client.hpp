@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:35:24 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/08 16:24:36 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/15 19:40:41 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ class Client
             //container
                     std::map<std::string, Channel*>     _membership;
             //function map
-                static repartitor         functMap[10];
+                static repartitor         functMap[11];
                 static const int          functMapSize;
             //action related command
                 //log system
