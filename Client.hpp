@@ -37,6 +37,7 @@ class Client
                 //status changer
                     void    setDisconnected(void);
                     void    setNick(const std::string& name);
+                    void    updateNick(const std::string& oldname);
                     void    setUser(const std::string& username, const std::string& realname);
                     void    setPassChecked(void);
                     void    setMustKill(void);
@@ -45,7 +46,9 @@ class Client
                     void    addSend(const std::string& toAdd);
                     void    addMembership(const std::string& name, Channel* chan);
                 //remover
+                    void    eraseTrace();
                     void    removeMembership(const std::string& name);
+                    void    eraseWbuffer();
                 //getters
                     //boolean
                         bool    mustSend(void);
@@ -53,6 +56,7 @@ class Client
                         bool    userSet(void);
                         bool    isRegistered(void);
                     //identities
+                        int                 getFd(void);
                         const std::string&  getNick(void);
                         const std::string&  getUser(void);
                         const std::string&  getHost(void);
@@ -84,9 +88,9 @@ class Client
                     std::string     _received;
                     std::string     _tosend;
             //container
-                    std::map<std::string, Channel*>  _membership;
+                    std::map<std::string, Channel*>     _membership;
             //function map
-                static repartitor         functMap[5];
+                static repartitor         functMap[9];
                 static const int          functMapSize;
             //action related command
                 //log system

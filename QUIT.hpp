@@ -1,16 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PrivateMsg.hpp                                     :+:      :+:    :+:   */
+/*   QUIT.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/09 16:31:03 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/09 16:37:32 by ndelhota         ###   ########.fr       */
+/*   Created: 2025/10/10 11:49:28 by ndelhota          #+#    #+#             */
+/*   Updated: 2025/10/10 11:54:49 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
 #include <iostream>
 #include "Action.hpp"
 
@@ -18,24 +17,16 @@ class Server;
 class Client;
 class Channel;
 
-class PrivateMsg : public Action
+class Quit: public Action
 {
-	public:
-		//constructor && destructor
-			PrivateMsg(Server* Base, Client* Customer, const std::string& args);
-			~PrivateMsg(void);
-		void	act(void);
-	
-	private:
-		//parse / slice
-			bool	parseCmd(void);
-			bool	splitCmd(size_t n);
-		//function
-			//privateMsg
-				void	clientMsg(void);
-			//chanelmsg
-				bool	sendChanOk();
-				void	channelMsg(void);
+        public:
+            //constructor & destructor
+                Quit(Server* base, Client* customer, const std::string& args);
+                ~Quit(void);
+            //main function
+                void    act(void);
+
+        private:
 };
 
-void	buildExecutePrivateMsg(Server* Base, Client* Customer, const std::string& args);
+void    buildExecuteQuit(Server *base, Client* customer, const std::string& args);

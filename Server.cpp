@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 11:42:13 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/10 14:38:45 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/04 11:42:15 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
+#include "QUIT.hpp"
 #include <algorithm>
 #include <unistd.h>
 #include <signal.h>
@@ -29,7 +30,6 @@ Server::Server(char *port, char *password):servName("DoleyDel"), version("1.0"),
 {
     if (strlen(port) > 5 || _port < 1024 || _port > 49151)
         throw std::domain_error("acceptable port range is [1024, 49151]");
-    set_time();
     launchServ();
 }
 
@@ -114,7 +114,7 @@ void    Server::cleanMapsAlloc()
 {
     std::map<int, Client*>::iterator it;
     std::map<std::string, Channel*>::iterator ite;
-
+    
     for (it = _clientList.begin(); it != _clientList.end(); it++)
             delete(it->second);
     for (ite = _channelList.begin(); ite != _channelList.end(); ite++)
@@ -150,13 +150,14 @@ void    Server::forceDisconnect(int fd)
     std::map<int, Client*>::iterator  it;
 
     it = _clientList.find(fd);
-    killClient(it);
+    if (it != _clientList.end())
+        killClient(it);
 }
 
 std::map<int, Client*>::iterator   Server::killClient(std::map<int, Client*>::iterator& itClient)
 {
     std::map<int, Client*>::iterator it;
-
+    
     it = itClient;
     itClient++;
     std::cout << "client from fd: " << it->first << "disconnected" <<  std::endl;
@@ -186,7 +187,7 @@ std::map<std::string, Channel*>::iterator   Server::killChannel(std::map<std::st
             Client* customer;
             char    BUFFER[1024];
             int     n;
-
+ 
             std::cout << "incoming detected from fd" << fd << std::endl;
             customer = _clientList[fd];
             n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
@@ -242,14 +243,18 @@ void    Server::routine(void)
 void    Server::watchClient(void)
 {
         std::map<int, Client*>::iterator itClient;
-
+        std::map<int, Client*>::iterator itTemp;
         itClient = _clientList.begin();
         while (itClient != _clientList.end())
         {
             if (itClient->second->mustSend())
                 addWFlag(itClient->first);
             if (itClient->second->mustKill() && !itClient->second->mustSend())
-                itClient = killClient(itClient);
+            {
+                itTemp = itClient;
+                itClient++;
+                buildExecuteQuit(this, itTemp->second, ": error with connection detected");
+            }
             else
                     itClient++;
         }
@@ -258,7 +263,7 @@ void    Server::watchClient(void)
 void    Server::watchChannel(void)
 {
         std::map<std::string, Channel*>::iterator   it;
-
+        
         it = _channelList.begin();
         while (it != _channelList.end())
         {
@@ -316,7 +321,7 @@ void    Server::watchRoutine(void)
         {
                 _phoneBook.insert(std::make_pair(name, customer));
         }
-
+        
         void    Server::addChannelList(const std::string& name, Channel* chan)
         {
                 _channelList.insert(std::make_pair(name, chan));
@@ -328,10 +333,25 @@ void    Server::watchRoutine(void)
                     return;
                 _phoneBook.erase(_phoneBook.find(name));
         }
-
+        
         void    Server::removeChannelList(const std::string& name)
         {
                 _channelList.erase(_channelList.find(name));
+        }
+        void    Server::eraseClient(int fd)
+        {
+                std::map<int, Client*>::iterator   it;
+
+                it = _clientList.find(fd);
+                killClient(it);
+        }
+
+        void        Server::removeOnIncident(int fd)
+        {
+                std::map<int, Client*>::iterator    it;
+
+                it = _clientList.find(fd);
+                buildExecuteQuit(this, it->second, "incident detected");
         }
     //time
         void Server::set_time()

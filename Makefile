@@ -6,7 +6,7 @@
 #    By: doley <doley@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/28 15:13:32 by ndelhota          #+#    #+#              #
-#    Updated: 2025/10/08 16:24:44 by doley            ###   ########.fr        #
+#    Updated: 2025/10/12 15:42:09 by ndelhota         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,10 @@ SRC := main.cpp \
 	   JOIN.cpp \
 	   PASS.cpp \
 	   PrivateMsg.cpp \
+	   QUIT.cpp \
+	   PART.cpp \
+	   MODE.cpp \
+	   TOPIC.cpp \
 
 CC := c++
 

@@ -28,6 +28,18 @@ PrivateMsg::~PrivateMsg(void)
 
 //parse
 
+bool   PrivateMsg::splitCmd(size_t n)
+{
+        _cmdTarget = _cmdArgs.substr(0, n);
+        _contextualArgs = _cmdArgs.substr(n + 1);
+        if (_contextualArgs.size() < 2 || _contextualArgs[0] != ':')
+        {
+            _customer->addSend(generateMsg(461));
+            return false;
+        }
+        return true;
+}
+
 bool    PrivateMsg::parseCmd(void)
 {
         size_t  n;
@@ -35,30 +47,15 @@ bool    PrivateMsg::parseCmd(void)
         n = _cmdArgs.find(' ');
         if (n == std::string::npos)
         {
-            //display error;
-            return false;
-        }
-        _cmdTarget = _cmdArgs.substr(0, n);
-        _contextualArgs = _cmdArgs.substr(n + 1);
-        std::cout << "target:" << _cmdTarget << std::endl;
-        std::cout << "text msg:" << _contextualArgs << std::endl;
-        if (_cmdTarget.empty() || _contextualArgs.size() < 2)
-        {
             _customer->addSend(generateMsg(461));
             return false;
         }
-        if (_contextualArgs[0] != ':')
-        {
-            //display error
-            return false;
-        }
-        std::cout << "success on parse" << std::endl;
-        return true;
+        return splitCmd(n);
 }
 
 ///main Action 
 
-    //chabbelmsg
+    //channelmsg
         bool    PrivateMsg::sendChanOk(void)
         {
                 if (!_chan)
@@ -89,14 +86,18 @@ bool    PrivateMsg::parseCmd(void)
 
             receiver = _base->existingClient(_cmdTarget);
             if (!receiver)
+            {
                 _customer->addSend(generateMsg(401));
-            else
-                receiver->addSend(generateMsg(-3));
+                return ;
+            }
+            receiver->addSend(generateMsg(-3));
         }
-void    PrivateMsg::act(void)
-{
 
-        std::cout << "begin of act pvmsg" << std::endl;
+        void    PrivateMsg::act(void)
+{
+        _cmdName = "PRIVMSG";
+        if(!globalParse())
+            return;
         if (!parseCmd())
             return;
         if (_cmdTarget[0] == '#')
