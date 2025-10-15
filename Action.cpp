@@ -17,8 +17,8 @@
 #include <string>
 
 //outofscope const struct;
-const int              Action::_tablesize = 33;
-const functionTable    Action::_table[33] = {
+const int              Action::_tablesize = 34;
+const functionTable    Action::_table[34] = {
         {-9, &Action::inviteMessage},
         {-8, &Action::topicChangeMessage},
         {-7, &Action::flagChangeMessage},
@@ -48,6 +48,7 @@ const functionTable    Action::_table[33] = {
         {461, &Action::needMoreParams461},
         {462, &Action::alreadyRegister462},
         {464, &Action::badPass464},
+        {471, &Action::rplChannelIsFull471},
         {473, &Action::inviteOnlyChan473},
         {475 ,&Action::badChannelKey475},
         {476, &Action::badChanMask476},
@@ -282,6 +283,11 @@ std::string  Action::generateMsg(int code)
             return getPrefixTrio("464") + _customer->getNick()+ " " + errormsg;
         }
     //channel related one
+
+        std::string     Action::rplChannelIsFull471(void)
+        {
+            return getPrefixTrio("471") + _chan->name + " :Cannot join Channel (+l)";
+        }
         std::string     Action::inviteOnlyChan473(void)
         {
             return getPrefixTrio("473") + _chan->name + " :Cannot join channel (+i)";

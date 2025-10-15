@@ -35,6 +35,7 @@ class	Channel
 				bool	correctPass(const std::string& test);
 				bool	isTopicRestricted(void);
 				bool	emptyTopic(void);
+				bool	isLimited(void);
 				bool	placeAvailable(void);
 			//returner
 				int					getPlaceNb(void);

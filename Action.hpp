@@ -75,6 +75,7 @@ class Action
                 //pass related
                         std::string     badPass464(void);
                 //chan related
+                        std::string     rplChannelIsFull471(void);
                         std::string     inviteOnlyChan473(void);
                         std::string     badChannelKey475(void);
                         std::string     badChanMask476(void);
@@ -87,7 +88,7 @@ class Action
                 void                            shortCutContext(size_t i);
         //container
                 static const int                _tablesize;
-                static const functionTable      _table[33];
+                static const functionTable      _table[34];
         
                 
 

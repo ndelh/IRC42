@@ -90,6 +90,11 @@ Channel::~Channel(void)
 				return _topic.empty();
 		}
 
+		bool	Channel::isLimited(void)
+		{
+				return _limitedNumber;
+		}
+
 		bool	Channel::placeAvailable(void)
 		{
 				return (_membersNumber < _maxMembers);

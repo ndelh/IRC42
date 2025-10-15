@@ -115,15 +115,18 @@ Join::~Join()
 		void	Join::joinChan(const std::string& pass)
 		{
 				if (_chan->isInvitationOnly())
-				{
 					if (!checkInvite())
 						return;
-				}
 				if	(_chan->isPassProtected())
 					if (!checkPass(pass))
 						return;
 				if	(!checkDoublon())
 					return ;
+				if (_chan->isLimited() && !_chan->placeAvailable())
+				{
+					_customer->addSend(generateMsg(471));
+					return;
+				}
 				_chan->customerJoin(_customer);
 				_chan->removeInviteList(_customer->getNick());
 				CommunicateSuccess();
