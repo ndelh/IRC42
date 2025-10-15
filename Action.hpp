@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 16:27:25 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/15 13:29:40 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/15 18:49:19 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ class Action
                         std::string     badChannelKey475(void);
                         std::string     badChanMask476(void);
                         std::string     rplChanOPrivIsNeeded482(void);
+                //kick related
+                        std::string     kickMessage(void);
 
         //factory utilitary fonction
                 std::string     getprefix(void);
@@ -84,7 +86,7 @@ class Action
                 void                            shortCutContext(size_t i);
         //container
                 static const int                _tablesize;
-                static const functionTable      _table[30];
+                static const functionTable      _table[31];
 
 
 

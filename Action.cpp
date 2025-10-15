@@ -17,8 +17,9 @@
 #include <string>
 
 //outofscope const struct;
-const int              Action::_tablesize = 30;
-const functionTable    Action::_table[30] = {
+const int              Action::_tablesize = 31;
+const functionTable    Action::_table[31] = {
+        {-10, &Action::kickMessage},
         {-7, &Action::flagChangeMessage},
         {-6, &Action::operatorChangeMessage},
         {-5, &Action::partmessage},
@@ -107,6 +108,10 @@ std::string  Action::generateMsg(int code)
 
     //personalized one
 
+        std::string     Action::kickMessage(void)
+        {
+            return (":" + _customer->getNick() + getUserHost() + " " + "KICK " + _chan->name + _cmdTarget + _contextualArgs);
+        }
         std::string     Action::flagChangeMessage(void)
         {
             return (":" + _customer->getNick() + " MODE " + _chan->name + " " + _contextualArgs);
@@ -222,12 +227,13 @@ std::string  Action::generateMsg(int code)
         {
             std::string errormsg(":Nickname is already in use");
 
-            return getPrefixTrio("433") + _cmdArgs.substr(0, _cmdArgs.find(' ')) + " " + errormsg;
+            return getPrefixTrio("433") + _cmdArgs.substr(0, _cmdArgs
+                .find(' ')) + " " + errormsg;
         }
 
         std::string     Action::rplUserNotInChannel441(void)
         {
-             return  getPrefixTrio("441") + _customer->getNick() + " " + _chan->name + " :They aren't on that channel";
+             return  getPrefixTrio("441") + _customer->getNick() + " " + _cmdTarget + " " + _chan->name + " :They aren't on that channel";
         }
 
         std::string     Action::rplNotOnChannel442(void)
@@ -237,7 +243,7 @@ std::string  Action::generateMsg(int code)
 
         std::string     Action::rplUserOnChannel443(void)
         {
-            return  getPrefixTrio("443") + _customer->getNick() + " " + _chan->name + " :is already on channel";
+            return  getPrefixTrio("443") + _customer->getNick() + " " + _cmdTarget + " " + _chan->name + " :is already on channel";
         }
     //general
         std::string     Action::needMoreParams461(void)
