@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:35:32 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/11 17:08:27 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/15 09:17:23 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,26 @@
 #include "JOIN.hpp"
 #include "PASS.hpp"
 #include "PrivateMsg.hpp"
+#include "QUIT.hpp"
+#include "PART.hpp"
+#include "MODE.hpp"
+#include "TOPIC.hpp"
 #include <unistd.h>
 
 // static data
 
-const int Client::functMapSize = 5;
+const int Client::functMapSize = 9;
 
-repartitor Client::functMap[5] = {
+repartitor Client::functMap[9] = {
     {"NICK", &buildExecuteNick},
     {"USER", &buildExecuteUser},
     {"JOIN", &buildExecuteJoin},
     {"PASS", &buildExecutePass},
     {"PRIVMSG", &buildExecutePrivateMsg},
+    {"QUIT", &buildExecuteQuit},
+    {"PART", &buildExecutePart},
+    {"MODE", &buildExecuteMode},
+    {"TOPIC", &buildExecuteTopic},
 };
 
 // constructor && destructor
@@ -67,6 +75,7 @@ bool Client::isRegistered(void)
 {
     return (_fullyRegistered);
 }
+
 // identity return
 const std::string &Client::getNick(void)
 {
@@ -81,6 +90,11 @@ const std::string &Client::getUser(void)
 const std::string &Client::getHost(void)
 {
     return (_host);
+}
+
+int                Client::getFd(void)
+{
+    return fd;
 }
 
 // setter
@@ -107,6 +121,15 @@ void Client::setMustKill()
 {
     _mustKill = true;
 }
+
+void Client::updateNick(const std::string& Oldnick)
+{
+    std::map<std::string, Channel*>::iterator   it;
+    
+    for (it = _membership.begin(); it != _membership.end(); it++)
+            it->second->updateNick(Oldnick, this);
+}
+
 // adders
 void Client::addReceived(const std::string &toAdd)
 {
@@ -119,17 +142,33 @@ void Client::addSend(const std::string &toAdd)
         _tosend += toAdd + "\r\n";
 }
 
-void Client::addMembership(const std::string& name, Channel* chan)
+void     Client::addMembership(const std::string& name, Channel* chan)
 {
     _membership.insert(std::make_pair(name, chan));
 }
 
-//remover
+//remover 
 
-void Client::removeMembership(const std::string& name)
+void     Client::removeMembership(const std::string& name)
 {
-    _membership.erase(_membership.find(name));
+        _membership.erase(_membership.find(name));
 }
+
+void    Client::eraseWbuffer(void)
+{
+        _tosend.erase();
+}
+
+void    Client::eraseTrace(void)
+{
+    std::map<std::string, Channel*>::iterator   it;
+
+    for (it = _membership.begin(); it != _membership.end(); it++)
+    {
+        it->second->customerLeave(this);
+    }
+}
+
 // command related function
 
 // pure utilitary
@@ -138,7 +177,7 @@ std::string extractCmd(std::string &line)
     size_t n;
     std::string cmd;
     while (!line.empty())
-    {
+    {   
         char last = line[line.size() - 1];
         if (last == '\r' || last == '\n')
             line.erase(line.size() - 1);
@@ -157,7 +196,7 @@ std::string extractCmd(std::string &line)
     }
     return (cmd);
 
-
+    
 }
 // log part
 bool Client::securityCheck(std::istringstream &flux)
@@ -197,7 +236,10 @@ void Client::registration(std::istringstream &flux)
         cmd = extractCmd(line);
         std::cout << "cmd: [" << cmd << "]" << std::endl;
         if (cmd == "NICK")
+        {
+            std::cout << "dedans" << std::endl;
             buildExecuteNick(_base, this, line);
+        }
         else if (cmd == "USER")
             buildExecuteUser(_base, this, line);
         else
@@ -220,6 +262,7 @@ void Client::clientCmd(std::string &line)
     std::string cmd;
 
     cmd = extractCmd(line);
+    std::cout << "cmd: [" << cmd << "]" << std::endl;
     for (int i = 0; i < functMapSize; i++)
     {
         if (cmd == functMap[i].name)
@@ -238,6 +281,7 @@ void Client::act(void)
 
     std::cout << "currenty working with this buffer \n"
               << _received << std::endl;
+    _received.erase();
     if (!_fullyRegistered)
         clientLog(flux);
     if (_disconnected)
@@ -245,9 +289,9 @@ void Client::act(void)
         _tosend.erase();
         _mustKill = true;
     }
-    while (getline(flux, line))
+    while (getline(flux, line) && !_mustKill)
         clientCmd(line);
-    _received.erase();
+    
 }
 
 // sending msg
@@ -266,7 +310,7 @@ void Client::sendmsg(void)
     _tosend.erase();
 }
 
-//broadcasting
+//broadcasting 
 
 void    Client::broadcastToLinked(const std::string& msg)
 {

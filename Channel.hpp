@@ -33,8 +33,12 @@ class	Channel
 				bool	isOperator(const std::string& name);
 				bool	isInvited(const std::string& name);
 				bool	correctPass(const std::string& test);
+				bool	isTopicRestricted(void);
+			//returner
+				int		getPlaceNb(void);
 			//lister
-				std::string									displayMembers(void);
+				std::string		displayMembers(void);
+				std::set<char>	activeFlags(void);
 		//setter
 			//adder
 				void	customerJoin(Client* customer);
@@ -42,6 +46,13 @@ class	Channel
 			//remover
 				void	customerDemote(const std::string& customerName);
 				void	customerLeave(Client* customer);
+			//updater
+				void	updateNick(const std::string& oldname, Client* customer);
+				void	changeInvMode(bool b);
+				void	changeTopicMode(bool b);
+				void	setSize(size_t n, bool b);
+				void	setPassword(std::string& pass, bool b);
+				void	setTopic(const std::string& args);
 		//broadcater
 				void	broadcastMembers(const std::string& msg);
 				void	broadcastOthers(const std::string &msg, const std::string& senderName);
@@ -57,8 +68,11 @@ class	Channel
 		//status
 			bool							_passProtected;
 			bool							_invitationOnly;
-			bool							_topicActive;
+			bool							_topicrestricted;
+			bool							_limitedNumber;
 			int								_membersNumber;
+			int								_maxMembers;
 		//variable
 			std::string						_pass;
+			std::string						_topic;
 };

@@ -87,6 +87,16 @@ Join::~Join()
 				}
 				return true;
 		}
+
+		bool	Join::checkDoublon(void)
+		{
+				if (_chan->isMember(_customer->getNick()))
+				{
+					_customer->addSend(generateMsg(443));
+					return false;
+				}
+				return true;
+		}
 		void	Join::creatingChan(const std::string& name, const std::string& pass)
 		{
 				Channel* created;
@@ -110,6 +120,8 @@ Join::~Join()
 				if	(_chan->isPassProtected())
 					if (!checkPass(pass))
 						return;
+				if	(!checkDoublon())
+					return ;
 				_chan->customerJoin(_customer);
 				CommunicateSuccess();
 				
@@ -117,7 +129,12 @@ Join::~Join()
 
 		void	Join::treatIt(std::map<std::string, std::string>::iterator& it)
 		{
-
+				if (it->first.size() > 50)
+				{
+					_contextualArgs = it->first;
+					_customer->addSend(generateMsg(476));
+					return ;
+				}
 				_chan = _base->existingChan(it->first);
 				if (!_chan)
 					creatingChan(it->first, it->second);

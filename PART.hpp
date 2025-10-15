@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PrivateMsg.hpp                                     :+:      :+:    :+:   */
+/*   PART.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/09 16:31:03 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/09 16:37:32 by ndelhota         ###   ########.fr       */
+/*   Created: 2025/10/11 17:03:31 by ndelhota          #+#    #+#             */
+/*   Updated: 2025/10/11 17:06:50 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+
+#pragma once 
 #include <iostream>
 #include "Action.hpp"
 
@@ -18,24 +19,19 @@ class Server;
 class Client;
 class Channel;
 
-class PrivateMsg : public Action
+class Part : public Action
 {
 	public:
-		//constructor && destructor
-			PrivateMsg(Server* Base, Client* Customer, const std::string& args);
-			~PrivateMsg(void);
-		void	act(void);
-	
+		Part(Server* base, Client* Customer, const std::string& args);
+		~Part(void);
+		//main action
+			void	act(void);
 	private:
-		//parse / slice
-			bool	parseCmd(void);
-			bool	splitCmd(size_t n);
-		//function
-			//privateMsg
-				void	clientMsg(void);
-			//chanelmsg
-				bool	sendChanOk();
-				void	channelMsg(void);
+		//parsing 	
+			void			parseSplitArgs(void);
+		//excuting
+			void			proceedPart(void);
+			void			channelLeave(void);		
 };
 
-void	buildExecutePrivateMsg(Server* Base, Client* Customer, const std::string& args);
+void	buildExecutePart(Server* base, Client* customer, const std::string& cmdArgs);

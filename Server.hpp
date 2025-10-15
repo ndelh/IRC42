@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 11:42:21 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/10 14:39:34 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/04 11:42:33 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,10 @@ class Server{
         ~Server(void);
         //getter
             //verification
-                bool                isPassCorrect(const std::string& test);
-                bool                nickAvailable(const std::string& name);
-                Channel*            existingChan(const std::string& name);
-                Client*             existingClient(const std::string& name);
-                const std::string   get_time(void) const;
+                bool        isPassCorrect(const std::string& test);
+                bool        nickAvailable(const std::string& name);
+                Channel*    existingChan(const std::string& name);
+                Client*     existingClient(const std::string& name);
 
         //core function
             //routine
@@ -48,14 +47,16 @@ class Server{
                 //removers
                     void    removePhonebook(const std::string&  name);
                     void    removeChannelList(const std::string& name);
+                    void    eraseClient(int fd);
+                    
         //public variables
             const std::string   servName;
             const std::string   version;
             const std::string   userMode;
             const std::string   channelMode;
     private:
-
-        //private function
+    
+        //private function 
             //server intialization/ epoll management and signals
                 void        launchServ(void);
                 void        signals_init(void);
@@ -64,13 +65,14 @@ class Server{
                 void        epollInit(void);
                 void        addWFlag(int fd);
                 void        removeWFlag(int fd);
-
+                
             //server destruction
                 void        cleanMapsAlloc(void);
             //client gestion
                 void                                    acceptClient(void);
                 void                                    forceDisconnect(int fd);
-                std::map<int, Client*>::iterator        killClient(std::map<int, Client*>::iterator& itClient);
+                void                                    removeOnIncident(int fd);
+                
             //channel gestion
                 std::map<std::string, Channel*>::iterator   killChannel(std::map<std::string, Channel*>::iterator& itChannel);
             //sub routine
@@ -79,9 +81,7 @@ class Server{
                 void        watchRoutine(void);
                 void        watchClient(void);
                 void        watchChannel(void);
-            //time setter
-                void        set_time(void);
-
+                std::map<int, Client*>::iterator        killClient(std::map<int, Client*>::iterator& itClient);
         //private variables
             //simple variables
                 const int           _port;
@@ -92,7 +92,6 @@ class Server{
                 int                 _serverSocket;
                 sockaddr_in         _servAddr;
                 char                _hostname[256];
-                std::string         _timeCreation;
             //container
                 std::map<int, Client*> _clientList;
                 std::map<std::string, Client*> _phoneBook;

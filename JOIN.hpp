@@ -34,6 +34,7 @@ class Join : public Action
 			//trying to join
 				bool	checkInvite(void);
 				bool	checkPass(const std::string& pass);
+				bool	checkDoublon(void);
 				void	creatingChan(const std::string& name, const std::string& pass);
 				void	joinChan(const std::string& pass);
 				void	treatIt(std::map<std::string, std::string>::iterator& it);

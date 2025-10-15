@@ -30,16 +30,13 @@ void Nick::act(void)
     std::istringstream flux(_cmdArgs);
     std::string line;
 
-    if (_cmdArgs == "")
-        std::cout << "nothing" << std::endl;
-    _contextualArgs = _customer->getNick();
-    if (!getline(flux, line, ' '))
-    {
-        _customer->addSend(generateMsg(461));
+    _cmdName = "NICK";
+    if (!globalParse())
         return;
-    }
+    getline(flux, line, ' ');
     if (!validNick(line))
         return;
+    _contextualArgs = _customer->getNick();
     if (_contextualArgs != "*")
         changeNick(line);
     else
@@ -53,7 +50,7 @@ bool Nick::validNick(const std::string &line)
 {
     std::string invalid = " ,:*?!@.";
 
-    if (line.empty() || line.find_first_of(invalid) != std::string::npos)
+    if (line.size() > 15 || line.find_first_of(invalid) != std::string::npos)
     {
         _customer->addSend(generateMsg(432));
         return false;
@@ -78,6 +75,7 @@ void Nick::changeNick(const std::string &line)
     _base->removePhonebook(_customer->getNick());
     _customer->setNick(line);
     _base->addPhonebook(line, _customer);
+    _customer->updateNick(_contextualArgs);
 }
 
 void Nick::updateInformation(void)

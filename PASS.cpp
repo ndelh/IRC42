@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 16:25:46 by doley             #+#    #+#             */
-/*   Updated: 2025/10/10 14:37:05 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/08 16:26:18 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	Pass::first_connection(void)
 		return;
 	}
 	_customer->addSend(generateMsg(464));
-	_customer->setDisconnected();
+	_customer->setMustKill();
 }
 
 void buildExecutePass(Server *base, Client *customer, const std::string &args)

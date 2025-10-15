@@ -21,18 +21,20 @@ Channel::Channel(const std::string& name): name(name)
 {
 	_passProtected = false;
 	_invitationOnly = false;
-	_topicActive = true;
+	_topicrestricted = true;
+	_limitedNumber = false;
 	_membersNumber = 0;
-	std::cout << "no pass channel: " << name << std::endl;
+	_maxMembers = 500;
 }
 
 Channel::Channel(const std::string& name, const std::string& pass): name(name), _pass(pass)
 {
 	_passProtected = true;
 	_invitationOnly = false;
-	_topicActive = true;
+	_topicrestricted = true;
+	_limitedNumber = false;
 	_membersNumber = 0;
-	std::cout << "pass channel: " << name << std::endl;
+	_maxMembers = 500;
 }
 
 Channel::~Channel(void)
@@ -75,6 +77,16 @@ Channel::~Channel(void)
 		{
 				return (_invitationList.find(name) != _invitationList.end());
 		}
+
+		bool	Channel::isTopicRestricted(void)
+		{
+				return _topicrestricted;
+		}
+	//returners
+		int		Channel::getPlaceNb(void)
+		{
+				return _maxMembers;
+		}
 		
 	//listers
 		std::string	Channel::displayMembers(void)
@@ -98,11 +110,27 @@ Channel::~Channel(void)
 			}
 			return to_ret;
 		}
+
+		std::set<char> Channel::activeFlags(void)
+		{
+			std::set<char> to_ret;
+
+			if (_passProtected)
+				to_ret.insert('k');
+			if (_invitationOnly)
+				to_ret.insert('i');
+			if (_limitedNumber)
+				to_ret.insert('l');
+			if (_topicrestricted)
+				to_ret.insert('t');
+			return to_ret;
+		}
 //setters
 	//adders
 		void	Channel::customerJoin(Client* customer)
 		{
 				_memberlist.insert(std::make_pair(customer->getNick(), customer));
+				++_membersNumber;
 		}
 		void	Channel::customerPromote(const std::string& customerName)
 		{
@@ -118,8 +146,48 @@ Channel::~Channel(void)
 				_memberlist.erase(_memberlist.find(customer->getNick()));
 				if (isOperator(customer->getNick()))
 					customerDemote(customer->getNick());
+				--_membersNumber;
+		}
+	//updater
+
+		void	Channel::updateNick(const std::string& oldName, Client* customer)
+		{
+				_memberlist.erase(_memberlist.find(oldName));
+				_memberlist.insert(std::make_pair(customer->getNick(), customer));
 		}
 
+		void	Channel::changeInvMode(bool b)
+		{
+				if (b != _invitationOnly)
+					_invitationOnly = b;
+		}
+		
+		void	Channel::changeTopicMode(bool b)
+		{
+				if (b != _topicrestricted)
+					_topicrestricted = b;
+		}
+
+		void	Channel::setSize(size_t n, bool b)
+		{
+				if (b != _limitedNumber)
+					_limitedNumber = b;
+				_maxMembers = (int)n;		
+		}
+
+		void	Channel::setPassword(std::string& pass, bool b)
+		{
+				if (b != _passProtected)
+					_passProtected = b;
+				if (b == true)
+					_pass = pass;
+				
+		}
+
+		void	Channel::setTopic(const std::string& topic)
+		{
+				_topic = topic;
+		}
 //broadcaster
 	//to members
 		void	Channel::broadcastMembers(const std::string& msg)

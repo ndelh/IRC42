@@ -1,41 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PrivateMsg.hpp                                     :+:      :+:    :+:   */
+/*   TOPIC.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/09 16:31:03 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/09 16:37:32 by ndelhota         ###   ########.fr       */
+/*   Created: 2025/10/15 08:54:59 by ndelhota          #+#    #+#             */
+/*   Updated: 2025/10/15 09:07:50 by ndelhota         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <iostream>
 #include "Action.hpp"
+#include <iostream>
+#include <sstream>
 
 class Server;
 class Client;
 class Channel;
 
-class PrivateMsg : public Action
+class Topic : public Action
 {
 	public:
-		//constructor && destructor
-			PrivateMsg(Server* Base, Client* Customer, const std::string& args);
-			~PrivateMsg(void);
+		Topic(Server* base, Client* customer, const std::string& cmdArgs);
+		~Topic(void);
 		void	act(void);
-	
 	private:
-		//parse / slice
-			bool	parseCmd(void);
-			bool	splitCmd(size_t n);
-		//function
-			//privateMsg
-				void	clientMsg(void);
-			//chanelmsg
-				bool	sendChanOk();
-				void	channelMsg(void);
+		//parsing
+			bool	parseBasicRights(void);
+		
+		//sub act
+			//displayTopic
+				void	displayTopic(void);
+			//modifyTopic
+				bool	changeRights(void);
+				void	changeTopic(void);
+
+		//variables
+			//flux
+				std::istringstream	_flux;
+		
 };
 
-void	buildExecutePrivateMsg(Server* Base, Client* Customer, const std::string& args);
+void	buildExecuteTopic(Server* base, Client* Customer, const std::string& args);

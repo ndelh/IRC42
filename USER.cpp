@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 14:27:05 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/11 17:08:03 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/08 16:31:28 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,8 @@ bool    User::argCount()
         if (line.empty())
             break;
         n++;
-        if (line[0] == ':')
-            break;
     }
+    std::cout << n << std::endl;
     return (n >= 4);
 }
 
@@ -51,7 +50,7 @@ bool    User::argCount()
 
         n = -1;
         for (int i = 0; i < 3; i++)
-            n = _cmdArgs.find(" ", n + 1);
+            n += _cmdArgs.find(" ", n + 1);
         ++n;
         if (*(_cmdArgs.begin() + n) == ':')
             realname = _cmdArgs.substr(n + 1);
