@@ -26,6 +26,7 @@ SRC := main.cpp \
 	   PART.cpp \
 	   MODE.cpp \
 	   TOPIC.cpp \
+	   KICK.cpp \
 
 CC := c++
 
