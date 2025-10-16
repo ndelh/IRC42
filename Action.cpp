@@ -190,6 +190,11 @@ std::string  Action::generateMsg(int code)
         {
             return getPrefixTrio("324") +  _chan->name + " +" + _contextualArgs;
         }
+        
+        std::string     Action::rplNoTopic331(void)
+        {
+            return  getPrefixTrio("331") + _chan->name + " :No topic is set";
+        }
 
         std::string     Action::rplTopic332(void)
         {
