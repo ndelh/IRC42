@@ -38,7 +38,7 @@ void	Pass::first_connection(void)
 		return;
 	}
 	_customer->addSend(generateMsg(464));
-	_customer->setDisconnected();
+	_customer->setMustKill();
 }
 
 void buildExecutePass(Server *base, Client *customer, const std::string &args)

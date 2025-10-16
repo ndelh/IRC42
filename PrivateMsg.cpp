@@ -20,6 +20,7 @@
 
 PrivateMsg::PrivateMsg(Server* Base, Client* Customer, const std::string& args): Action(Base, Customer, args)
 {
+    _cmdName = "PRIVMSG";
 }
 
 PrivateMsg::~PrivateMsg(void)
@@ -123,7 +124,6 @@ void    PrivateMsg::executeSend(void)
         
 void    PrivateMsg::act(void)
 {
-        _cmdName = "PRIVMSG";
         if(!globalParse())
             return;
         if (!parseCmd())

@@ -183,6 +183,19 @@ std::map<std::string, Channel*>::iterator   Server::killChannel(std::map<std::st
 }
 //server routine
     //sub routine
+
+    bool    Server::validRead(const std::string& a, Client* Customer)
+    {
+            int size;
+
+            size = a.size();
+            if (size > 512)
+            {
+                buildExecuteQuit(this, Customer, "tried to inject a line exceding the limitations of the server/client system");
+                return false;
+            }
+            return true;
+    }
     void    Server::processRead(int fd)
     {
             Client* customer;
@@ -194,8 +207,9 @@ std::map<std::string, Channel*>::iterator   Server::killChannel(std::map<std::st
             n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
             while (n > 0)
             {
-                BUFFER[n] = 0;
-                std::string a(BUFFER);
+                std::string a(BUFFER, n);
+                if (!validRead(a, customer))
+                    return;
                 customer->addReceived(a);
                 n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
             }
@@ -254,7 +268,7 @@ void    Server::watchClient(void)
             {
                 itTemp = itClient;
                 itClient++;
-                buildExecuteQuit(this, itTemp->second, ": error with connection detected");
+                buildExecuteQuit(this, itTemp->second, ": abrupt leave, didnt use the quit command");
             }
             else
                     itClient++;

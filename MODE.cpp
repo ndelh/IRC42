@@ -212,7 +212,7 @@ Mode::~Mode(void)
 		itTarget = _targetList.begin();
 		for (itFlag = _flagList.begin(); itFlag != _flagList.end(); itFlag++)
 		{
-			if (itFlag->second == 'k' || itFlag->second == 'o' || itFlag->second == 'l')
+			if (((itFlag->second == 'k' || itFlag->second == 'l') && (itFlag->first)) || itFlag->second == 'o')
 				setTarget(itTarget);
 			for (i = 0; i < _fNumber; i++)
 			{
@@ -230,13 +230,18 @@ Mode::~Mode(void)
 
 	void	Mode::modeK(bool b)
 	{
-			if (!checkEmptyTarget())
-				return ;
-			if (_cmdTarget.size() > 15)
+			std::cout << "mode k entered" << std::endl;
+			if (b)
 			{
-				_cmdTarget.erase(15);
-				_customer->addSend(generateMsg(461));
-				return ;
+				std::cout << "entered + loop" << std::endl;
+				if (!checkEmptyTarget())
+					return ;
+				if (_cmdTarget.size() > 15)
+				{
+					_cmdTarget.erase(15);
+					_customer->addSend(generateMsg(461));
+					return ;
+				}
 			}
 			modifyFlags('k', b);
 			_chan->setPassword(_cmdTarget, b);
@@ -249,19 +254,21 @@ Mode::~Mode(void)
 	{
 			int 	i;
 			
-			if (!checkEmptyTarget())
-				return ;
-			i = std::atoi(_cmdTarget.c_str());
-			if((_cmdTarget.find_first_not_of("0123456789")) != std::string::npos || _cmdTarget.size() > 4 || (i > 500 || i < 0))
+			i = 0;
+			if (b)
 			{
-				_customer->addSend(generateMsg(461));
-				return ;
+				if (!checkEmptyTarget())
+					return ;
+				i = std::atoi(_cmdTarget.c_str());
+				if((_cmdTarget.find_first_not_of("0123456789")) != std::string::npos || _cmdTarget.size() > 4 || (i > 500 || i < 0))
+				{
+					_customer->addSend(generateMsg(461));
+					return ;
+				}
 			}
 			_chan->setSize(i, b);
 			_newlimit = _cmdTarget;
 			modifyFlags('l', b);
-			
-
 	}
 
 	void	Mode::modePromote(void)
