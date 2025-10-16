@@ -29,6 +29,7 @@ partitioner Mode::_functionMap[5] =
 
 Mode::Mode(Server* base, Client* customer, const std::string& cmdArgs): Action(base, customer, cmdArgs), _flux(cmdArgs)
 {
+	_cmdName = "MODE";
 	_passChanged = false;
 }
 
@@ -328,7 +329,6 @@ Mode::~Mode(void)
 
 void	Mode::act(void)
 {
-	_cmdName = "MODE";
 	if (!globalParse())
 		return;
 	if (!retrieveChan())

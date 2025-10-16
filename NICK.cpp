@@ -17,6 +17,7 @@
 // constructor && destructor
 Nick::Nick(Server *base, Client *customer, const std::string &cmdArgs) : Action(base, customer, cmdArgs)
 {
+    _cmdName = "NICK";
 }
 Nick::~Nick(void)
 {
@@ -30,7 +31,6 @@ void Nick::act(void)
     std::istringstream flux(_cmdArgs);
     std::string line;
 
-    _cmdName = "NICK";
     if (!globalParse())
         return;
     getline(flux, line, ' ');
