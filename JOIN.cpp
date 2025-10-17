@@ -19,6 +19,7 @@
 
 Join::Join(Server* base, Client* customer, const std::string& args): Action(base, customer, args)
 {
+	_cmdName = "JOIN";
 }
 
 Join::~Join()

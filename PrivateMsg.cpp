@@ -20,6 +20,7 @@
 
 PrivateMsg::PrivateMsg(Server* Base, Client* Customer, const std::string& args): Action(Base, Customer, args)
 {
+    _cmdName = "PRIVMSG";
 }
 
 PrivateMsg::~PrivateMsg(void)
@@ -28,11 +29,23 @@ PrivateMsg::~PrivateMsg(void)
 
 //parse
 
-bool   PrivateMsg::splitCmd(size_t n)
+bool   PrivateMsg::splitCmd(void)
 {
-        _cmdTarget = _cmdArgs.substr(0, n);
-        _contextualArgs = _cmdArgs.substr(n + 1);
-        if (_contextualArgs.size() < 2 || _contextualArgs[0] != ':')
+        std::istringstream  flux(_cmdArgs);
+        std::string         line;
+        size_t              n;
+      
+        while (getline(flux, line, ' '))
+        {
+            if (!line.empty() && line[0] == ':')
+                break;
+            if (!line.empty())
+                _receiverList.push_back(line);
+        }
+        n = _cmdArgs.find(':');
+        if (n != std::string::npos)
+            _contextualArgs = _cmdArgs.substr(n);
+        if (_contextualArgs.empty() || _receiverList.empty())
         {
             _customer->addSend(generateMsg(461));
             return false;
@@ -50,7 +63,7 @@ bool    PrivateMsg::parseCmd(void)
             _customer->addSend(generateMsg(461));
             return false;
         }
-        return splitCmd(n);
+        return splitCmd();
 }
 
 ///main Action 
@@ -93,17 +106,29 @@ bool    PrivateMsg::parseCmd(void)
             receiver->addSend(generateMsg(-3));
         }
 
-        void    PrivateMsg::act(void)
+void    PrivateMsg::executeSend(void)
 {
-        _cmdName = "PRIVMSG";
+        std::vector<std::string>::iterator  it;
+
+        it = _receiverList.begin();
+        for (; it != _receiverList.end(); it++)
+        {
+            _cmdTarget = *it;
+            if (_cmdTarget[0] == '#')
+                channelMsg();
+            else
+                clientMsg();
+        }
+
+}
+        
+void    PrivateMsg::act(void)
+{
         if(!globalParse())
             return;
         if (!parseCmd())
             return;
-        if (_cmdTarget[0] == '#')
-            channelMsg();
-        else
-            clientMsg();
+        executeSend();
 }
 
 

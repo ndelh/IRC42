@@ -18,6 +18,7 @@
 //constructor && destructor
 User::User(Server* base, Client *customer, const std::string& cmdArgs): Action(base, customer, cmdArgs)
 {
+    _cmdName = "USER";
 }
 
 User::~User(void)

@@ -86,7 +86,6 @@ Topic::~Topic(void)
 			}
 void	Topic::act(void)
 {
-	std::cout << "topic sucessfully entered" << std::endl;
 	if (!globalParse())
 		return;
 	if (!parseBasicRights())
