@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MODE.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:51:35 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/12 19:15:15 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/17 11:53:12 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ Mode::Mode(Server* base, Client* customer, const std::string& cmdArgs): Action(b
 {
 	_cmdName = "MODE";
 	_passChanged = false;
+	_invalidFlagFound = false;
 }
 
 Mode::~Mode(void)
@@ -52,7 +53,7 @@ Mode::~Mode(void)
 		void	Mode::removeFlags(char c)
 		{
 			std::set<char>::iterator	it;
-			
+
 			it = _currentFlags.find(c);
 			if (it == _currentFlags.end())
 				return;
@@ -65,7 +66,7 @@ Mode::~Mode(void)
 		void	Mode::addFlags(char c)
 		{
 			std::set<char>::iterator it;
-			
+
 			it = _currentFlags.find(c);
 			if (it == _currentFlags.end())
 				_currentFlags.insert(c);
@@ -171,7 +172,7 @@ Mode::~Mode(void)
 		void	Mode::genModifyList(void)
 		{
 			std::string line;
-	
+
 			while (getline(_flux, line, ' '))
 			{
 				if (line[0] != '+' && line[0] != '-')
@@ -181,7 +182,7 @@ Mode::~Mode(void)
 			if (line.empty())
 			{
 				std::cout << "catched" << std::endl;
-				return ;	
+				return ;
 			}
 			if (line[0] != '+' && line[0] != '-')
 			{
@@ -196,7 +197,7 @@ Mode::~Mode(void)
 	void	Mode::setTarget(std::vector<std::string>::iterator& it)
 	{
 			if (it != _targetList.end())
-			{	
+			{
 				_cmdTarget = *it;
 				it++;
 			}
@@ -208,17 +209,25 @@ Mode::~Mode(void)
 		std::vector<std::pair<bool, char> >::iterator	itFlag;
 		std::vector<std::string>::iterator				itTarget;
 		int 											i;
-		
+		bool											flag_found;
+
 		itTarget = _targetList.begin();
 		for (itFlag = _flagList.begin(); itFlag != _flagList.end(); itFlag++)
 		{
 			if (((itFlag->second == 'k' || itFlag->second == 'l') && (itFlag->first)) || itFlag->second == 'o')
 				setTarget(itTarget);
+			flag_found = false;
 			for (i = 0; i < _fNumber; i++)
 			{
 				if (itFlag->second == _functionMap[i].mode)
+				{
 					(this->*(_functionMap[i].function))(itFlag->first);
+					flag_found = true;
+					break;
+				}
 			}
+			if (!flag_found)
+				_invalidFlagFound = true;
 		}
 	}
 
@@ -253,7 +262,7 @@ Mode::~Mode(void)
 	void	Mode::modeL(bool b)
 	{
 			int 	i;
-			
+
 			i = 0;
 			if (b)
 			{
@@ -294,7 +303,7 @@ Mode::~Mode(void)
 				return;
 			if(!_chan->isMember(_cmdTarget))
 			{
-				_customer->addSend(generateMsg(401)); //create 441 and change here
+				_customer->addSend(generateMsg(441));
 				return;
 			}
 			if (!b)
@@ -342,7 +351,7 @@ void	Mode::act(void)
 		return;
 	genModifyList();
 	if (_flagList.empty())
-	{	
+	{
 		if (_targetList.empty())
 			noFlagMode();
 		else
@@ -351,6 +360,8 @@ void	Mode::act(void)
 	}
 	useList();
 	sendmessage();
+	if (_invalidFlagFound)
+		_customer->addSend(generateMsg(501));
 }
 
 //out of scope

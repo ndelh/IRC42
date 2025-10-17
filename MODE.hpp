@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MODE.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:55:07 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/12 19:04:07 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/17 11:36:11 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ class Mode : public Action
 			~Mode(void);
 		//act
 			void	act(void);
-			
-			
-	
+
+
+
 	private:
 		//parse
 				bool	retrieveChan(void);
@@ -79,7 +79,9 @@ class Mode : public Action
 			//classic
 				bool								_passChanged;
 				std::string							_newlimit;
-			
+			//flag error
+				bool								_invalidFlagFound;
+
 };
 
 void	buildExecuteMode(Server* base, Client* customer ,const std::string& cmdArgs);

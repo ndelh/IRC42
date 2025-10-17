@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 16:27:25 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/15 19:39:13 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/17 11:55:12 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ class Action
                         std::string     rplChanOPrivIsNeeded482(void);
                 //kick related
                         std::string     kickMessage(void);
+                //mode related
+                        std::string     rplUModeUnknownFlag501(void);
 
         //factory utilitary fonction
                 std::string     getprefix(void);
@@ -91,7 +93,7 @@ class Action
                 void                            shortCutContext(size_t i);
         //container
                 static const int                _tablesize;
-                static const functionTable      _table[36];
+                static const functionTable      _table[37];
 
 
 

@@ -17,8 +17,8 @@
 #include <string>
 
 //outofscope const struct;
-const int              Action::_tablesize = 36;
-const functionTable    Action::_table[36] = {
+const int              Action::_tablesize = 37;
+const functionTable    Action::_table[37] = {
         {-10, &Action::kickMessage},
         {-9, &Action::inviteMessage},
         {-8, &Action::topicChangeMessage},
@@ -55,6 +55,7 @@ const functionTable    Action::_table[36] = {
         {475 ,&Action::badChannelKey475},
         {476, &Action::badChanMask476},
         {482, &Action::rplChanOPrivIsNeeded482},
+        {501, &Action::rplUModeUnknownFlag501},
 };
 
 Action::Action(Server* base, Client* customer, const std::string& cmdArgs): _base(base), _customer(customer), _cmdArgs(cmdArgs)
@@ -190,7 +191,7 @@ std::string  Action::generateMsg(int code)
         {
             return getPrefixTrio("324") +  _chan->name + " +" + _contextualArgs;
         }
-        
+
         std::string     Action::rplNoTopic331(void)
         {
             return  getPrefixTrio("331") + _chan->name + " :No topic is set";
@@ -319,6 +320,11 @@ std::string  Action::generateMsg(int code)
         std::string     Action::rplChanOPrivIsNeeded482(void)
         {
             return getPrefixTrio("482") + _chan->name + ":You're not channel operator";
+        }
+    //mode related one
+        std::string     Action::rplUModeUnknownFlag501(void)
+        {
+            return getPrefixTrio("501") + ": Unknown MODE flag";
         }
     //protected
         bool    Action::onlySpace(void)
