@@ -81,6 +81,11 @@ bool Client::isRegistered(void)
     return (_fullyRegistered);
 }
 
+bool Client::hasDisconnected(void)
+{
+    return (_disconnected);
+}
+
 // identity return
 const std::string &Client::getNick(void)
 {

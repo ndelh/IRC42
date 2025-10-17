@@ -26,7 +26,7 @@ volatile sig_atomic_t SIG = 0;
 
 //constructor && destructor
 
-Server::Server(char *port, char *password):servName("DoleyDel"), version("1.0"), userMode("O"), channelMode("sagdhasg"),  _port(std::atoi(port)), _servPass(password), _rFlags(EPOLLIN | EPOLLET), _wrFlags(EPOLLIN | EPOLLOUT | EPOLLET)
+Server::Server(char *port, char *password):servName("DoleyDel"), version("1.0"), userMode("O"), channelMode("iklot"),  _port(std::atoi(port)), _servPass(password), _rFlags(EPOLLIN | EPOLLET), _wrFlags(EPOLLIN | EPOLLOUT | EPOLLET)
 {
     if (strlen(port) > 5 || _port < 1024 || _port > 49151)
         throw std::domain_error("acceptable port range is [1024, 49151]");
@@ -152,7 +152,7 @@ void    Server::forceDisconnect(int fd)
 
     it = _clientList.find(fd);
     if (it != _clientList.end())
-        killClient(it);
+        it->second->setDisconnected();
 }
 
 std::map<int, Client*>::iterator   Server::killClient(std::map<int, Client*>::iterator& itClient)
@@ -264,7 +264,7 @@ void    Server::watchClient(void)
         {
             if (itClient->second->mustSend())
                 addWFlag(itClient->first);
-            if (itClient->second->mustKill() && !itClient->second->mustSend())
+            if ((itClient->second->mustKill() && !itClient->second->mustSend()) || itClient->second->hasDisconnected())
             {
                 itTemp = itClient;
                 itClient++;

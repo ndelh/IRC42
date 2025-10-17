@@ -55,6 +55,7 @@ class Client
                         bool    mustKill(void);
                         bool    userSet(void);
                         bool    isRegistered(void);
+                        bool    hasDisconnected(void);
                     //identities
                         int                 getFd(void);
                         const std::string&  getNick(void);

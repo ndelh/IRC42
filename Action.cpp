@@ -293,7 +293,7 @@ std::string  Action::generateMsg(int code)
         {
             std::string errormsg(":Password incorrect");
 
-            return getPrefixTrio("464") + _customer->getNick()+ " " + errormsg;
+            return getPrefixTrio("464") + errormsg;
         }
     //channel related one
 
