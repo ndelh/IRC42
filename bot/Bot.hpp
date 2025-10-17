@@ -18,6 +18,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <exception>
+#include <sstream>
+#include <errno.h>
 
 class Bot
 {
@@ -28,12 +30,23 @@ class Bot
         //variable
             const std::string   _name;
     private:
+        //function
+            void                    sendMsg(void);
+            void                    receiveMsg(void);
+            void                    act(void);
+            void                    logSystem(void);
+            void                    barking(std::string& line);
         //variable
             const std::string&      _pass;
             int                     _port;
             int                     _kfd;
+            int                     _pollFd;
+            bool                    _mustDie;
+            bool                    _registrationDone;
+            std::string             _sendBuffer;
+            std::string             _receiveBuffer;
         //init connection 
             void    connectKennel(void);
-            
+            bool    initEpoll(void);
 
 };

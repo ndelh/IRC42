@@ -204,15 +204,15 @@ std::map<std::string, Channel*>::iterator   Server::killChannel(std::map<std::st
  
             std::cout << "incoming detected from fd" << fd << std::endl;
             customer = _clientList[fd];
-            n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
-            while (n > 0)
-            {
-                std::string a(BUFFER, n);
-                if (!validRead(a, customer))
-                    return;
-                customer->addReceived(a);
                 n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
-            }
+                while (n > 0)
+                {
+                    std::string a(BUFFER, n);
+                    if (!validRead(a, customer))
+                        return;
+                    customer->addReceived(a);
+                    n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
+                }
             if (n == 0)
                 customer->setDisconnected();
             customer->act();
