@@ -77,6 +77,7 @@ class Server{
             //channel gestion
                 std::map<std::string, Channel*>::iterator   killChannel(std::map<std::string, Channel*>::iterator& itChannel);
             //sub routine
+                bool        validRead(const std::string& args, Client* customer);
                 void        processRead(int fd);
                 void        processWrite(int fd);
                 void        watchRoutine(void);

@@ -25,6 +25,7 @@
 #include "KICK.hpp"
 #include "INVITE.hpp"
 #include <unistd.h>
+#include <string>
 
 // static data
 
@@ -278,9 +279,10 @@ void Client::act(void)
 {
     std::istringstream flux(_received);
     std::string line;
-
     std::cout << "currenty working with this buffer \n"
               << _received << std::endl;
+    if ( _received.size() < 2 || !(*(_received.end() - 2) == '\r' && *(_received.end() - 1) == '\n'))
+        return ;
     _received.erase();
     if (!_fullyRegistered)
         clientLog(flux);
@@ -290,7 +292,14 @@ void Client::act(void)
         _mustKill = true;
     }
     while (getline(flux, line) && !_mustKill)
+    {
+        if (line.size() > 512)
+        {
+            buildExecuteQuit(_base, this, "was kicked by server due to shady input (combining exceeding char limit and lagging)");
+            return ;
+        }
         clientCmd(line);
+    }
 
 }
 

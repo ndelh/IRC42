@@ -12,6 +12,7 @@
 
 #pragma once
 #include <iostream>
+#include <vector>
 #include "Action.hpp"
 
 class Server;
@@ -29,13 +30,16 @@ class PrivateMsg : public Action
 	private:
 		//parse / slice
 			bool	parseCmd(void);
-			bool	splitCmd(size_t n);
+			bool	splitCmd(void);
 		//function
+			void	executeSend(void);
 			//privateMsg
 				void	clientMsg(void);
 			//chanelmsg
 				bool	sendChanOk();
 				void	channelMsg(void);
+		//container
+			std::vector<std::string>	_receiverList;
 };
 
 void	buildExecutePrivateMsg(Server* Base, Client* Customer, const std::string& args);
