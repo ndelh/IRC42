@@ -15,6 +15,20 @@
 
 //constructor and destructor
 
+int  Bot::kennelMembers = 10;
+Doggo   Bot:: kennelPool[10] = {
+        {"Spanish Black Cocker", "GRR WOOF WOOF"},
+        {"Golden Retriever", "Bwaf Bwaf"},
+        {"Border Collie", "Bark Bark"},
+        {"Husky", "AWOUWOUWOUWOUWOU"},
+        {"Afghan Hound", "KAIKAIKAI"},
+        {"Pinscher", "YIP YAP BARK"},
+        {"English Cocker Spaniel", "WAF WAF WAF"},
+        {"Daschund", "Grrrrr grrrrr"},
+        {"Belgian Shepperd", "WAAAAF WAFFFF"},
+        {"Australian Shepperd", "WEEF WOOF"},
+};
+
 Bot::Bot(const std::string& name, const std::string& pass, const std::string& port): _name(name), _pass(pass)
 {
     _port = std::atoi(port.c_str());
@@ -61,7 +75,7 @@ bool    Bot::initEpoll(void)
     epoll_ctl(_pollFd, EPOLL_CTL_ADD, _kfd, &events);
     _sendBuffer += "PASS " + _pass + "\r\n";
     _sendBuffer += "NICK " + _name + "\r\n";
-    _sendBuffer += "USER BOT * 0 BOTCHIEN\r\n";
+    _sendBuffer += "USER BOT * 0 BOTDOG\r\n";
     return true;
 }
 
@@ -78,7 +92,11 @@ void    Bot::sendMsg(void)
         while (getline(flux, line))
         {
             line += "\n";
-            send(_kfd, line.c_str(), line.size(), 0);
+            if (send(_kfd, line.c_str(), line.size(), 0) != - 1)
+                std::cout << "sended" << std::endl;
+            else
+                std::cout << "send error" << std::endl;
+            std::cout << "line sended" << line << std::endl;
         }
         _sendBuffer.erase();
         epoll_ctl(_pollFd, EPOLL_CTL_MOD, _kfd, &ev);
@@ -102,10 +120,12 @@ void    Bot::receiveMsg(void)
             std::cout << _receiveBuffer << std::endl;
         if (n == 0)
         {
+            std::cout << "n was equal to 0" << std::endl;
             _mustDie = true;
             return ;
         }
         act();
+        std::cout << _sendBuffer << std::endl;
         if (!_sendBuffer.empty())
         {
             ev.events = EPOLLIN | EPOLLOUT;
@@ -130,19 +150,54 @@ void    Bot::logSystem(void)
             _registrationDone = true;
 }
 
+bool    extractName(std::string& line)
+{
+        size_t  n;
+
+        if (line.size() < 3 || line[0] != ':')
+            return false;
+        line.erase(0, 1);
+        if ((n = line.find('!')) == std::string::npos)
+            return false;
+        line = line.substr(0, n);
+        if ( line.empty() || line[0] == '#')
+            return false;
+        std::cout << line << std::endl;
+        return true;
+}
+
+void    Bot::releaseDog(std::string& target)
+{
+        if (target.size() < 2 || target[0] != ':')
+            return;
+        target.erase(0, 1);
+        for (int i = 0; i < kennelMembers; i++)
+        {
+            _sendBuffer += "NICK " + kennelPool[i].species + "\r\n";
+            for (int j = 0; j < 3; j++)
+                _sendBuffer += "PRIVMSG " + target + " :" + kennelPool[i].bark + "\r\n";
+        }
+        _sendBuffer += "NICK Kennel\r\n";
+}
+
 void    Bot::barking(std::string& line)
 {
         std::istringstream  flux(line);
-        std::string         word1;
+        std::string         author;
         std::string         word2;
         std::string         word3;
         std::string         target;
 
-        if (line.size() < 1 || *(line.end() + 1) != '+')
+        if (line.size() < 1 || *(line.end() - 1) != '\r')
             return ;
-        if (!(flux >> word1 >> word2 >>word3 >> target))
+        if (!(flux >> author >> word2 >>word3 >> target) || word2 != "PRIVMSG")
             return ;
-        
+        if (!extractName(author))
+            return ;
+        if (author != "HoundMaster")
+            _sendBuffer += ("PRIVMSG " + author + " :I dont recognize you as my master, get lost fool\r\n");
+        else
+            releaseDog(target);
 }
 
 void    Bot::act(void)
@@ -150,6 +205,8 @@ void    Bot::act(void)
         std::istringstream  flux(_receiveBuffer);
         std::string         line;
 
+        if (_registrationDone)
+            std::cout << "registration done" << std::endl;
         if (!_registrationDone)
             logSystem();
         else
@@ -157,6 +214,7 @@ void    Bot::act(void)
             while (getline(flux, line))
                 barking(line);
         }
+        _receiveBuffer.erase();
 }
 
 void    Bot::veil(void)

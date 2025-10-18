@@ -18,8 +18,17 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <exception>
+#include <string>
 #include <sstream>
 #include <errno.h>
+
+
+struct Doggo
+{
+    std::string     species;
+    std::string     bark;
+};
+
 
 class Bot
 {
@@ -36,6 +45,7 @@ class Bot
             void                    act(void);
             void                    logSystem(void);
             void                    barking(std::string& line);
+            void                    releaseDog(std::string& target);
         //variable
             const std::string&      _pass;
             int                     _port;
@@ -45,6 +55,10 @@ class Bot
             bool                    _registrationDone;
             std::string             _sendBuffer;
             std::string             _receiveBuffer;
+        //tab
+            static Doggo                   kennelPool[10];
+            static int                     kennelMembers;
+
         //init connection 
             void    connectKennel(void);
             bool    initEpoll(void);
