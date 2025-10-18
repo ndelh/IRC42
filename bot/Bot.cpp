@@ -12,21 +12,22 @@
 
 #include "Bot.hpp"
 #include <stdlib.h>
+#include <unistd.h>
 
 //constructor and destructor
 
 int  Bot::kennelMembers = 10;
 Doggo   Bot:: kennelPool[10] = {
-        {"Spanish Black Cocker", "GRR WOOF WOOF"},
-        {"Golden Retriever", "Bwaf Bwaf"},
-        {"Border Collie", "Bark Bark"},
+        {"Shiba", "GRR WOOF WOOF"},
+        {"GoldenRetriever", "Bwaf Bwaf"},
+        {"BorderCollie", "Bark Bark"},
         {"Husky", "AWOUWOUWOUWOUWOU"},
-        {"Afghan Hound", "KAIKAIKAI"},
+        {"AfghanHound", "KAIKAIKAI"},
         {"Pinscher", "YIP YAP BARK"},
-        {"English Cocker Spaniel", "WAF WAF WAF"},
+        {"Spaniel", "WAF WAF WAF"},
         {"Daschund", "Grrrrr grrrrr"},
-        {"Belgian Shepperd", "WAAAAF WAFFFF"},
-        {"Australian Shepperd", "WEEF WOOF"},
+        {"BelgianShepperd", "WAAAAF WAFFFF"},
+        {"GermanShepperd", "WEEF WOOF"},
 };
 
 Bot::Bot(const std::string& name, const std::string& pass, const std::string& port): _name(name), _pass(pass)
@@ -36,6 +37,7 @@ Bot::Bot(const std::string& name, const std::string& pass, const std::string& po
         throw std::out_of_range("port number must be comprised between [1024, 49151]");
     _mustDie = false;
     _registrationDone = false;
+    _KennelCall = 0;
 }
 
 Bot::~Bot(void)
@@ -171,13 +173,12 @@ void    Bot::releaseDog(std::string& target)
         if (target.size() < 2 || target[0] != ':')
             return;
         target.erase(0, 1);
-        for (int i = 0; i < kennelMembers; i++)
-        {
-            _sendBuffer += "NICK " + kennelPool[i].species + "\r\n";
-            for (int j = 0; j < 3; j++)
-                _sendBuffer += "PRIVMSG " + target + " :" + kennelPool[i].bark + "\r\n";
-        }
+        _sendBuffer += "NICK " + kennelPool[_KennelCall].species + "\r\n";
+        _sendBuffer += "PRIVMSG " + target + " :" + kennelPool[_KennelCall].bark + "\r\n";
         _sendBuffer += "NICK Kennel\r\n";
+        _KennelCall++;
+        if (_KennelCall > 9)
+            _KennelCall = 0;
 }
 
 void    Bot::barking(std::string& line)

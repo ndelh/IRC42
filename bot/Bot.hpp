@@ -52,6 +52,7 @@ class Bot
             int                     _kfd;
             int                     _pollFd;
             bool                    _mustDie;
+            int                     _KennelCall;
             bool                    _registrationDone;
             std::string             _sendBuffer;
             std::string             _receiveBuffer;
