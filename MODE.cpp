@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:51:35 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/17 11:53:12 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/18 13:48:36 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,10 +180,7 @@ Mode::~Mode(void)
 				treatFlagLine(line);
 			}
 			if (line.empty())
-			{
-				std::cout << "catched" << std::endl;
 				return ;
-			}
 			if (line[0] != '+' && line[0] != '-')
 			{
 				_targetList.push_back(line);
@@ -239,10 +236,8 @@ Mode::~Mode(void)
 
 	void	Mode::modeK(bool b)
 	{
-			std::cout << "mode k entered" << std::endl;
 			if (b)
 			{
-				std::cout << "entered + loop" << std::endl;
 				if (!checkEmptyTarget())
 					return ;
 				if (_cmdTarget.size() > 15)

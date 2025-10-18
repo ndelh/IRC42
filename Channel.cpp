@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 18:02:20 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/05 18:04:26 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/18 13:47:22 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ Channel::~Channel(void)
 		{
 				return (_memberlist.empty());
 		}
-		
+
 		bool	Channel::isMember(const std::string& customerName)
 		{
 				return ( _memberlist.find(customerName) != _memberlist.end());
 		}
-		
+
 		bool	Channel::isOperator(const std::string& customerName)
 		{
 				return (_operatorList.find(customerName) != _operatorList.end());
@@ -73,10 +73,9 @@ Channel::~Channel(void)
 		{
 				return (_invitationOnly);
 		}
-		
+
 		bool	Channel::isInvited(const std::string& name)
 		{
-				std::cout << name << std::endl;
 				return (_invitationList.find(name) != _invitationList.end());
 		}
 
@@ -109,7 +108,7 @@ Channel::~Channel(void)
 		{
 				return _topic;
 		}
-		
+
 	//listers
 		std::string	Channel::displayMembers(void)
 		{
@@ -118,7 +117,7 @@ Channel::~Channel(void)
 			std::string	name;
 			bool		first;
 
-			first = true;			
+			first = true;
 			for (it = _memberlist.begin(); it != _memberlist.end(); it++)
 			{
 				if (_operatorList.find(it->first) != _operatorList.end())
@@ -163,11 +162,6 @@ Channel::~Channel(void)
 		{
 				_invitationList.insert(customerName);
 				std::set<std::string>::iterator it;
-				std::cout << "printing the set" << std::endl;
-				for (it = _invitationList.begin(); it != _invitationList.end(); it++)
-				{
-					std::cout << "entry: " << *it << std::endl;
-				}
 		}
 	//removers
 		void	Channel::customerDemote(const std::string& customerName)
@@ -184,7 +178,7 @@ Channel::~Channel(void)
 		void	Channel::removeInviteList(const std::string& customerName)
 		{
 				std::set<std::string>::iterator it;
-				
+
 				it = _invitationList.find(customerName);
 				if (it != _invitationList.end())
 					_invitationList.erase(it);
@@ -195,9 +189,9 @@ Channel::~Channel(void)
 		{
 				_memberlist.erase(_memberlist.find(oldName));
 				_memberlist.insert(std::make_pair(customer->getNick(), customer));
-				
+
 				std::set<std::string>::iterator	it;
-				
+
 				it = _operatorList.find(oldName);
 				if (it != _operatorList.end())
 				{
@@ -211,7 +205,7 @@ Channel::~Channel(void)
 				if (b != _invitationOnly)
 					_invitationOnly = b;
 		}
-		
+
 		void	Channel::changeTopicMode(bool b)
 		{
 				if (b != _topicrestricted)
@@ -222,7 +216,7 @@ Channel::~Channel(void)
 		{
 				if (b != _limitedNumber)
 					_limitedNumber = b;
-				_maxMembers = (int)n;		
+				_maxMembers = (int)n;
 		}
 
 		void	Channel::setPassword(std::string& pass, bool b)
@@ -231,7 +225,7 @@ Channel::~Channel(void)
 					_passProtected = b;
 				if (b == true)
 					_pass = pass;
-				
+
 		}
 
 		void	Channel::setTopic(const std::string& topic)
@@ -243,16 +237,16 @@ Channel::~Channel(void)
 		void	Channel::broadcastMembers(const std::string& msg)
 		{
 				std::map<std::string, Client*>::iterator it;
-				
+
 				for (it = _memberlist.begin(); it != _memberlist.end(); it++)
 					it->second->addSend(msg);
 		}
 		void	Channel::broadcastOthers(const std::string& msg, const std::string& customerName)
 		{
 				std::map<std::string, Client*>::iterator it;
-				
+
 				for (it = _memberlist.begin(); it != _memberlist.end(); it++)
-				{	
+				{
 					if (it->first != customerName)
 						it->second->addSend(msg);
 				}
@@ -261,9 +255,9 @@ Channel::~Channel(void)
 		void	Channel::partialBroadcast(std::set<std::string>& alreadyInformed, const std::string& msg)
 		{
 				std::map<std::string, Client*>::iterator it;
-				
+
 				for (it = _memberlist.begin(); it != _memberlist.end(); it++)
-				{	
+				{
 					if (alreadyInformed.find(it->first) == alreadyInformed.end())
 					{
 						it->second->addSend(msg);

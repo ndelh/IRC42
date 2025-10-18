@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   INVITE.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:02:42 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/15 15:14:45 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/18 13:48:51 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Invite::~Invite(void)
 				_chan = _base->existingChan(_contextualArgs);
 				if (!_chan)
 				{
-					_customer->addSend(generateMsg(403));	
+					_customer->addSend(generateMsg(403));
 					return false;
 				}
 				if (!_chan->isMember(_customer->getNick()))
@@ -87,7 +87,6 @@ Invite::~Invite(void)
 
 void	Invite::act(void)
 {
-	std::cout << "inviteLaunched" << std::endl;
 	if (!parse())
 		return;
 	if (!checkChannel())

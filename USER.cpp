@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 14:27:05 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/18 12:09:18 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/18 13:47:43 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,6 @@ void    User::act(void)
             username = _cmdArgs.substr(0, 10);
         getRName(realname);
         _customer->setUser(username, realname);
-        std::cout << "Username: " << username << "\nlen: " << username.length() <<
-        "\nRealname: " << realname << "\nlen: " << realname.length() <<
-        "\nNickname: " << _customer->getNick() << "\nlen: " << _customer->getNick().length() << std::endl;
 }
 
 //out of scope

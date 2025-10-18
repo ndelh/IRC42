@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 11:42:13 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/04 11:42:15 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/18 13:47:59 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void    Server::cleanMapsAlloc()
 {
     std::map<int, Client*>::iterator it;
     std::map<std::string, Channel*>::iterator ite;
-    
+
     for (it = _clientList.begin(); it != _clientList.end(); it++)
             delete(it->second);
     for (ite = _channelList.begin(); ite != _channelList.end(); ite++)
@@ -158,10 +158,9 @@ void    Server::forceDisconnect(int fd)
 std::map<int, Client*>::iterator   Server::killClient(std::map<int, Client*>::iterator& itClient)
 {
     std::map<int, Client*>::iterator it;
-    
+
     it = itClient;
     itClient++;
-    std::cout << "client from fd: " << it->first << "disconnected" <<  std::endl;
     epoll_ctl(_epollFd, EPOLL_CTL_DEL, it->first, NULL);
     removePhonebook(it->second->getNick());
     delete(it->second);
@@ -201,8 +200,7 @@ std::map<std::string, Channel*>::iterator   Server::killChannel(std::map<std::st
             Client* customer;
             char    BUFFER[1024];
             int     n;
- 
-            std::cout << "incoming detected from fd" << fd << std::endl;
+
             customer = _clientList[fd];
             n = recv(fd, BUFFER, 1024, MSG_DONTWAIT);
             while (n > 0)
@@ -278,7 +276,7 @@ void    Server::watchClient(void)
 void    Server::watchChannel(void)
 {
         std::map<std::string, Channel*>::iterator   it;
-        
+
         it = _channelList.begin();
         while (it != _channelList.end())
         {
@@ -336,7 +334,7 @@ void    Server::watchRoutine(void)
         {
                 _phoneBook.insert(std::make_pair(name, customer));
         }
-        
+
         void    Server::addChannelList(const std::string& name, Channel* chan)
         {
                 _channelList.insert(std::make_pair(name, chan));
@@ -348,7 +346,7 @@ void    Server::watchRoutine(void)
                     return;
                 _phoneBook.erase(_phoneBook.find(name));
         }
-        
+
         void    Server::removeChannelList(const std::string& name)
         {
                 _channelList.erase(_channelList.find(name));

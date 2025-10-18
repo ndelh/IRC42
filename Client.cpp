@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:35:32 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/15 19:41:47 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/18 13:49:11 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,7 +239,6 @@ void Client::registration(std::istringstream &flux)
     while (!_fullyRegistered && getline(flux, line))
     {
         cmd = extractCmd(line);
-        std::cout << "cmd: [" << cmd << "]" << std::endl;
         if (cmd == "NICK")
             buildExecuteNick(_base, this, line);
         else if (cmd == "USER")
@@ -272,15 +271,12 @@ void Client::clientCmd(std::string &line)
             return;
         }
     }
-    std::cout << "command invalid command" << std::endl;
 }
 
 void Client::act(void)
 {
     std::istringstream flux(_received);
     std::string line;
-    std::cout << "currenty working with this buffer \n"
-              << _received << std::endl;
     if ( _received.size() < 2 || !(*(_received.end() - 2) == '\r' && *(_received.end() - 1) == '\n'))
         return ;
     _received.erase();
@@ -309,8 +305,6 @@ void Client::sendmsg(void)
     std::istringstream flux(_tosend);
     std::string line;
 
-    std::cout << "send buffer" << std::endl
-              << _tosend << std::endl;
     while (getline(flux, line))
     {
         line += '\n';
