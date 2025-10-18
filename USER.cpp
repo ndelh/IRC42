@@ -6,7 +6,7 @@
 /*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 14:27:05 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/08 16:31:28 by doley            ###   ########.fr       */
+/*   Updated: 2025/10/18 12:09:18 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,16 @@ bool    User::argCount()
             n = _cmdArgs.find(" ", n + 1);
         ++n;
         if (*(_cmdArgs.begin() + n) == ':')
-            realname = _cmdArgs.substr(n + 1);
+            realname = _cmdArgs.substr(n + 1, 100);
         else
-            realname = _cmdArgs.substr(n + 1, _cmdArgs.find(" ", n + 1));
+        {
+            size_t  space = _cmdArgs.find(" ", n + 1);
+            if (space != std::string::npos)
+                realname = _cmdArgs.substr(n, std::min(space - n, (size_t)100));
+            else
+                realname = _cmdArgs.substr(n, 100);
+
+        }
     }
 //core function
 
@@ -76,11 +83,16 @@ void    User::act(void)
             _customer->addSend(generateMsg(462));
             return;
         }
-        if (!argCount())
-            return ;
-        username = _cmdArgs.substr(0, _cmdArgs.find(" "));
+        size_t  space = _cmdArgs.find(" ");
+        if (space != std::string::npos)
+            username = _cmdArgs.substr(0, std::min(space, (size_t)10));
+        else
+            username = _cmdArgs.substr(0, 10);
         getRName(realname);
         _customer->setUser(username, realname);
+        std::cout << "Username: " << username << "\nlen: " << username.length() <<
+        "\nRealname: " << realname << "\nlen: " << realname.length() <<
+        "\nNickname: " << _customer->getNick() << "\nlen: " << _customer->getNick().length() << std::endl;
 }
 
 //out of scope
