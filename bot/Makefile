@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: doley <doley@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/17 13:31:00 by ndelhota          #+#    #+#              #
-#    Updated: 2025/10/17 13:57:09 by ndelhota         ###   ########.fr        #
+#    Updated: 2025/10/18 14:09:01 by doley            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME := ircserv
+NAME := bot
 
 SRC := main.cpp \
        Bot.cpp \

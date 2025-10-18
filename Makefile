@@ -6,11 +6,13 @@
 #    By: doley <doley@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/28 15:13:32 by ndelhota          #+#    #+#              #
-#    Updated: 2025/10/17 11:15:58 by doley            ###   ########.fr        #
+#    Updated: 2025/10/18 14:16:08 by doley            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := ircserv
+
+BOT  := bot
 
 SRC := main.cpp \
        Server.cpp \
@@ -46,12 +48,17 @@ $(OBJDIR)/%.o: %.cpp
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(BOT):
+	$(MAKE) -C ./bot
+
 clean :
 	rm -rf $(OBJDIR)
+	$(MAKE) -C ./bot clean
 
 fclean : clean
 	rm -f $(NAME)
+	$(MAKE) -C ./bot fclean
 
 re : fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bot
