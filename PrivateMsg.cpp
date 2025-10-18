@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PrivateMsg.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndelhota <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: doley <doley@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 16:26:32 by ndelhota          #+#    #+#             */
-/*   Updated: 2025/10/09 16:30:56 by ndelhota         ###   ########.fr       */
+/*   Updated: 2025/10/18 12:46:19 by doley            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool   PrivateMsg::splitCmd(void)
         std::istringstream  flux(_cmdArgs);
         std::string         line;
         size_t              n;
-      
+
         while (getline(flux, line, ' '))
         {
             if (!line.empty() && line[0] == ':')
@@ -66,7 +66,7 @@ bool    PrivateMsg::parseCmd(void)
         return splitCmd();
 }
 
-///main Action 
+///main Action
 
     //channelmsg
         bool    PrivateMsg::sendChanOk(void)
@@ -89,7 +89,16 @@ bool    PrivateMsg::parseCmd(void)
             _chan = _base->existingChan(_cmdTarget);
             if (!sendChanOk())
                 return;
-            _chan->broadcastOthers(generateMsg(-3), _customer->getNick());
+            if (_contextualArgs.length() > 450)
+            {
+                std::string tmp = _contextualArgs.substr(450);
+                _contextualArgs.erase(450, _contextualArgs.length());
+                _chan->broadcastOthers(generateMsg(-3), _customer->getNick());
+                _contextualArgs = tmp;
+                _chan->broadcastOthers(generateMsg(-3), _customer->getNick());
+            }
+            else
+                _chan->broadcastOthers(generateMsg(-3), _customer->getNick());
         }
 
     //personnal msg
@@ -103,7 +112,16 @@ bool    PrivateMsg::parseCmd(void)
                 _customer->addSend(generateMsg(401));
                 return ;
             }
-            receiver->addSend(generateMsg(-3));
+            if (_contextualArgs.length() > 450)
+            {
+                std::string tmp = _contextualArgs.substr(450);
+                _contextualArgs.erase(450, _contextualArgs.length());
+                receiver->addSend(generateMsg(-3));
+                _contextualArgs = tmp;
+                receiver->addSend(generateMsg(-3));
+            }
+            else
+                receiver->addSend(generateMsg(-3));
         }
 
 void    PrivateMsg::executeSend(void)
@@ -121,7 +139,7 @@ void    PrivateMsg::executeSend(void)
         }
 
 }
-        
+
 void    PrivateMsg::act(void)
 {
         if(!globalParse())
